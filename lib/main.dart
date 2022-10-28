@@ -1,6 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:music_app/theme.dart';
+import 'package:music_app/themes.dart';
 
 import 'firebase_options.dart';
 
@@ -17,11 +17,13 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    ThemeData appTheme = AppTheme(isDark: true).toThemeData();
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Music App',
       theme: appTheme,
-      home: const Scaffold(),
+      home: null,
     );
   }
 }
