@@ -1,28 +1,46 @@
-import 'package:music_app/models/artist_model.dart';
-
 class Song {
   final String name;
-  final List<Artist> artists;
-  final int playedCount;
-  final int likeCount;
+  final String description;
+  final String url;
+  final String coverUrl;
 
   Song({
     required this.name,
-    required this.artists,
-    required this.playedCount,
-    required this.likeCount,
+    required this.description,
+    required this.url,
+    required this.coverUrl,
   });
 
-  factory Song.fromJson(Map<String, dynamic> json) => Song(
-        name: json['name'],
-        artists: [],
-        playedCount: json['played_count'],
-        likeCount: json['like_count'],
-      );
-
-  Map<String, dynamic> toJson() => {
-        'name': name,
-        'played_count': playedCount,
-        'like_count': likeCount,
-      };
+  static List<Song> sampleSongs = [
+    Song(
+      name: 'Tren tinh ban duoi tinh yeu',
+      description: 'Tren tinh ban duoi tinh yeu',
+      url: 'samples/musics/tren-tinh-ban.mp3',
+      coverUrl: 'samples/covers/tren-tinh-ban.jpeg',
+    ),
+    Song(
+      name: 'Tren tinh ban duoi tinh yeu',
+      description: 'Tren tinh ban duoi tinh yeu',
+      url: 'samples/musics/tren-tinh-ban.mp3',
+      coverUrl: 'samples/covers/tren-tinh-ban.jpeg',
+    ),
+    Song(
+      name: 'Tren tinh ban duoi tinh yeu',
+      description: 'Tren tinh ban duoi tinh yeu',
+      url: 'samples/musics/tren-tinh-ban.mp3',
+      coverUrl: 'samples/covers/tren-tinh-ban.jpeg',
+    ),
+    Song(
+      name: 'Tren tinh ban duoi tinh yeu',
+      description: 'Tren tinh ban duoi tinh yeu',
+      url: 'samples/musics/tren-tinh-ban.mp3',
+      coverUrl: 'samples/covers/tren-tinh-ban.jpeg',
+    ),
+    Song(
+      name: 'Tren tinh ban duoi tinh yeu',
+      description: 'Tren tinh ban duoi tinh yeu',
+      url: 'samples/musics/tren-tinh-ban.mp3',
+      coverUrl: 'samples/covers/tren-tinh-ban.jpeg',
+    ),
+  ];
 }
