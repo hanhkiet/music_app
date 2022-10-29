@@ -19,28 +19,10 @@ class Song {
       coverUrl: 'samples/covers/tren-tinh-ban.jpeg',
     ),
     Song(
-      name: 'Tren tinh ban duoi tinh yeu',
-      description: 'Tren tinh ban duoi tinh yeu',
-      url: 'samples/musics/tren-tinh-ban.mp3',
-      coverUrl: 'samples/covers/tren-tinh-ban.jpeg',
-    ),
-    Song(
-      name: 'Tren tinh ban duoi tinh yeu',
-      description: 'Tren tinh ban duoi tinh yeu',
-      url: 'samples/musics/tren-tinh-ban.mp3',
-      coverUrl: 'samples/covers/tren-tinh-ban.jpeg',
-    ),
-    Song(
-      name: 'Tren tinh ban duoi tinh yeu',
-      description: 'Tren tinh ban duoi tinh yeu',
-      url: 'samples/musics/tren-tinh-ban.mp3',
-      coverUrl: 'samples/covers/tren-tinh-ban.jpeg',
-    ),
-    Song(
-      name: 'Tren tinh ban duoi tinh yeu',
-      description: 'Tren tinh ban duoi tinh yeu',
-      url: 'samples/musics/tren-tinh-ban.mp3',
-      coverUrl: 'samples/covers/tren-tinh-ban.jpeg',
+      name: 'Shay nang',
+      description: 'Shay nang',
+      url: 'samples/musics/shay-nang.mp3',
+      coverUrl: 'samples/covers/shay-nang.jpeg',
     ),
   ];
 }

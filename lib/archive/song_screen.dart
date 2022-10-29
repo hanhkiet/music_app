@@ -1,20 +1,57 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/route_manager.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:music_app/controllers/player_controller.dart';
+import 'package:music_app/archive/seekbar.dart';
 import 'package:music_app/models/song_model.dart';
-import 'package:music_app/widgets/seekbar.dart';
-import 'package:music_app/widgets/widgets.dart';
 import 'package:rxdart/rxdart.dart' as rxdart;
 
-class SongScreen extends StatelessWidget {
+class SongScreen extends StatefulWidget {
   const SongScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final PlayerController playerController = Get.find();
-    playerController.updateSong(Get.arguments ?? Song.sampleSongs[0]);
+  State<SongScreen> createState() => _SongScreenState();
+}
 
+class _SongScreenState extends State<SongScreen> {
+  AudioPlayer audioPlayer = AudioPlayer();
+  Song song = Get.arguments ?? Song.sampleSongs[0];
+
+  Stream<SeekBarData> get _seekBarDataStream =>
+      rxdart.Rx.combineLatest2<Duration, Duration?, SeekBarData>(
+          audioPlayer.positionStream, audioPlayer.durationStream,
+          (Duration position, Duration? duration) {
+        return SeekBarData(position, duration ?? Duration.zero);
+      });
+
+  @override
+  void initState() {
+    super.initState();
+
+    audioPlayer.setAudioSource(
+      ConcatenatingAudioSource(
+        children: [
+          AudioSource.uri(
+            Uri.parse('asset:///${song.url}'),
+          ),
+          AudioSource.uri(
+            Uri.parse('asset:///${song.url}'),
+          ),
+          AudioSource.uri(
+            Uri.parse('asset:///${song.url}'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    audioPlayer.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -25,11 +62,15 @@ class SongScreen extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           Image.asset(
-            playerController.currentSong.value.coverUrl,
+            song.coverUrl,
             fit: BoxFit.cover,
           ),
           const BackgroundFilter(),
-          const MusicPlayer()
+          MusicPlayer(
+            song: song,
+            seekBarDataStream: _seekBarDataStream,
+            audioPlayer: audioPlayer,
+          ),
         ],
       ),
     );
@@ -39,21 +80,18 @@ class SongScreen extends StatelessWidget {
 class MusicPlayer extends StatelessWidget {
   const MusicPlayer({
     Key? key,
-  }) : super(key: key);
+    required this.song,
+    required Stream<SeekBarData> seekBarDataStream,
+    required this.audioPlayer,
+  })  : _seekBarDataStream = seekBarDataStream,
+        super(key: key);
 
-  Stream<SeekBarData> _getSeekBarDataStream(AudioPlayer audioPlayer) {
-    return rxdart.Rx.combineLatest2<Duration, Duration?, SeekBarData>(
-        audioPlayer.positionStream, audioPlayer.durationStream,
-        (Duration position, Duration? duration) {
-      return SeekBarData(position, duration ?? Duration.zero);
-    });
-  }
+  final Stream<SeekBarData> _seekBarDataStream;
+  final AudioPlayer audioPlayer;
+  final Song song;
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<PlayerController>();
-    final song = controller.currentSong.value;
-    final audioPlayer = controller.audioPlayer;
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: 20,
@@ -81,7 +119,7 @@ class MusicPlayer extends StatelessWidget {
           ),
           const SizedBox(height: 30),
           StreamBuilder<SeekBarData>(
-            stream: _getSeekBarDataStream(audioPlayer),
+            stream: _seekBarDataStream,
             builder: (context, snapshot) {
               final positionData = snapshot.data;
               return SeekBar(
@@ -91,7 +129,7 @@ class MusicPlayer extends StatelessWidget {
               );
             },
           ),
-          PlayerButton(audioPlayer: audioPlayer)
+          // const PlayerButton()
         ],
       ),
     );

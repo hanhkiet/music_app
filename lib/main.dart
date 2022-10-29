@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:music_app/controllers/player_controller.dart';
 import 'package:music_app/screens/collection_screen.dart';
 import 'package:music_app/screens/home_screen.dart';
 import 'package:music_app/screens/song_screen.dart';
@@ -11,15 +12,16 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     // ThemeData appTheme = AppTheme(isDark: true).toThemeData();
+    Get.put(PlayerController());
 
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
@@ -30,7 +32,7 @@ class MyApp extends StatelessWidget {
               displayColor: Colors.white,
             ),
       ),
-      home: const CollectionScreen(),
+      home: const HomeScreen(),
       getPages: [
         GetPage(name: '/', page: () => const HomeScreen()),
         GetPage(name: '/song', page: () => const SongScreen()),
