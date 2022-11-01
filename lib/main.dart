@@ -5,6 +5,7 @@ import 'package:music_app/controllers/player_controller.dart';
 import 'package:music_app/screens/collection_screen.dart';
 import 'package:music_app/screens/home_screen.dart';
 import 'package:music_app/screens/song_screen.dart';
+import 'package:music_app/screens/user_screen.dart';
 
 import 'firebase_options.dart';
 
@@ -32,11 +33,12 @@ class MyApp extends StatelessWidget {
               displayColor: Colors.white,
             ),
       ),
-      home: const HomeScreen(),
+      home: const UserScreen(),
       getPages: [
         GetPage(name: '/', page: () => const HomeScreen()),
         GetPage(name: '/song', page: () => const SongScreen()),
         GetPage(name: '/collection', page: () => const CollectionScreen()),
+        GetPage(name: '/user', page: () => const UserScreen()),
       ],
     );
   }
