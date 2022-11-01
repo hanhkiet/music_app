@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/state_manager.dart';
 import 'package:music_app/models/collection_model.dart';
 import 'package:music_app/models/song_model.dart';
+import 'package:music_app/screens/home/home_controller.dart';
 import 'package:music_app/widgets/widgets.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends GetView<HomeController> {
   const HomeScreen({super.key});
 
   @override
@@ -23,7 +25,6 @@ class HomeScreen extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: const CustomAppBar(),
-        bottomNavigationBar: const CustomNavBar(),
         body: SingleChildScrollView(
           child: Column(
             children: [
@@ -155,40 +156,6 @@ class MusicDiscover extends StatelessWidget {
         ],
       ),
     );
-  }
-}
-
-class CustomNavBar extends StatelessWidget {
-  const CustomNavBar({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: const Color.fromARGB(255, 0, 171, 180),
-        unselectedItemColor: Colors.white.withOpacity(.7),
-        selectedItemColor: Colors.white,
-        showUnselectedLabels: false,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite_outline),
-            label: 'Favorite',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.play_circle_outline),
-            label: 'Play',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.people_outline_outlined),
-            label: 'Home',
-          ),
-        ]);
   }
 }
 

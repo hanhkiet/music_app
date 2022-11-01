@@ -2,10 +2,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:music_app/controllers/player_controller.dart';
-import 'package:music_app/screens/collection_screen.dart';
-import 'package:music_app/screens/home_screen.dart';
-import 'package:music_app/screens/song_screen.dart';
-import 'package:music_app/screens/user_screen.dart';
+import 'package:music_app/screens/dashboard/dashboard.dart';
+import 'package:music_app/screens/dashboard/dashboard_binding.dart';
+import 'package:music_app/screens/song/song_screen.dart';
 
 import 'firebase_options.dart';
 
@@ -33,12 +32,17 @@ class MyApp extends StatelessWidget {
               displayColor: Colors.white,
             ),
       ),
-      home: const UserScreen(),
+      initialRoute: '/dashboard',
       getPages: [
-        GetPage(name: '/', page: () => const HomeScreen()),
-        GetPage(name: '/song', page: () => const SongScreen()),
-        GetPage(name: '/collection', page: () => const CollectionScreen()),
-        GetPage(name: '/user', page: () => const UserScreen()),
+        GetPage(
+          name: '/dashboard',
+          page: () => const DashBoard(),
+          binding: DashBoardBinding(),
+        ),
+        GetPage(
+          name: '/song',
+          page: () => const SongScreen(),
+        ),
       ],
     );
   }
