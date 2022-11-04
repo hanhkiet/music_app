@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:music_app/archives/user_screen.dart';
+import 'package:music_app/firebase_test.dart';
 import 'package:music_app/screens/dashboard/dashboard_controller.dart';
 import 'package:music_app/screens/home/home_screen.dart';
+import 'package:music_app/screens/user/user_screen.dart';
 
 class DashBoard extends StatelessWidget {
   const DashBoard({super.key});
@@ -11,12 +12,13 @@ class DashBoard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<DashBoardController>(builder: (controller) {
       return Scaffold(
-        backgroundColor: Colors.red,
+        backgroundColor: Colors.black,
         body: SafeArea(
           child: IndexedStack(
             index: controller.tabIndex,
-            children: [
-              const HomeScreen(),
+            children: const [
+              HomeScreen(),
+              FirebaseTest(),
               UserScreen(),
             ],
           ),
@@ -33,6 +35,10 @@ class DashBoard extends StatelessWidget {
             BottomNavigationBarItem(
               icon: Icon(Icons.home),
               label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.search),
+              label: 'Search',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.person),

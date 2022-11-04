@@ -1,28 +1,28 @@
+import 'dart:convert';
+
 class Song {
   final String name;
-  final String description;
-  final String url;
+  final int favoriteCount;
+  final int playCount;
   final String coverUrl;
 
   Song({
     required this.name,
-    required this.description,
-    required this.url,
+    required this.favoriteCount,
+    required this.playCount,
     required this.coverUrl,
   });
 
-  static List<Song> sampleSongs = [
-    Song(
-      name: 'Tren tinh ban duoi tinh yeu',
-      description: 'Tren tinh ban duoi tinh yeu',
-      url: 'samples/musics/tren-tinh-ban.mp3',
-      coverUrl: 'samples/covers/tren-tinh-ban.jpeg',
-    ),
-    Song(
-      name: 'Shay nang',
-      description: 'Shay nang',
-      url: 'samples/musics/shay-nang.mp3',
-      coverUrl: 'samples/covers/shay-nang.jpeg',
-    ),
-  ];
+  factory Song.fromJson(Map<String, dynamic> json) {
+    return Song(
+      name: json['name'],
+      favoriteCount: json['favorite_count'],
+      playCount: json['play_count'],
+      coverUrl: json['cover_url'],
+    );
+  }
+
+  static List<Song> fromData(Iterable i) {
+    return List<Song>.from(i.map((e) => Song.fromJson(json.decode(e))));
+  }
 }

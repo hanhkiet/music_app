@@ -6,8 +6,6 @@ class CollectionScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Collection collection = Collection.collectionSamples[0];
-
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -26,19 +24,19 @@ class CollectionScreen extends StatelessWidget {
           title: const Text('Playlist'),
           centerTitle: true,
         ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              children: [
-                CollectionInformation(collection: collection),
-                const SizedBox(height: 30),
-                const PlayOrShuffleWidget(),
-                SongList(collection: collection),
-              ],
-            ),
-          ),
-        ),
+        // body: SingleChildScrollView(
+        //   child: Padding(
+        //     padding: const EdgeInsets.all(20),
+        //     child: Column(
+        //       children: [
+        //         CollectionInformation(collection: collection),
+        //         const SizedBox(height: 30),
+        //         const PlayOrShuffleWidget(),
+        //         SongList(collection: collection),
+        //       ],
+        //     ),
+        //   ),
+        // ),
       ),
     );
   }
@@ -74,7 +72,7 @@ class SongList extends StatelessWidget {
                 .bodyLarge!
                 .copyWith(fontWeight: FontWeight.bold),
           ),
-          subtitle: Text('${collection.songs[index].description} - 02:45'),
+          // subtitle: Text('${collection.songs[index].description} - 02:45'),
           trailing: const Icon(
             Icons.more_vert,
             color: Colors.white,

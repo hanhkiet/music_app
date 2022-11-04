@@ -22,9 +22,43 @@ exports.getArtist = functions.https.onCall(async (data, context) => {
     return snap.data();
 });
 
-exports.getRandomSong = functions.https.onCall(async (data, context) => {
-    const collectionSnap = await firestore.collection('songs').get();
-    const randomIndex = Math.floor(Math.random() * collectionSnap.size);
+exports.getTrendingSongs = functions.https.onCall(async (data, context) => {
+    const snap = await firestore.collection('songs').orderBy('play_count', 'desc').limit(5).get();
+    const result = snap.docs.map(function (doc) {
+        const id = doc.id;
+        const data = doc.data();
+        return {
+            id, ...data,
+        }
+    });
+    return result;
+});
 
-    return collectionSnap.docs[randomIndex].data();
+exports.getTopArtists = functions.https.onCall(async (data, context) => {
+    const snap = await firestore.collection('artists').orderBy('follow_count', 'desc').limit(5).get();
+    const result = snap.docs.map(function (doc) {
+        const id = doc.id;
+        const data = doc.data();
+        return {
+            id, ...data,
+        }
+    });
+    return result;
+});
+
+exports.getArtistsFromSong = functions.https.onCall(async (data, context) => {
+    const songSnap = await firestore.collection('songs').doc(data.id).get();
+    const artistRefs = songSnap.data().artists;
+
+    const result = await Promise.all(artistRefs.map(async function (ref) {
+        const snap = await ref.get();
+        return snap.data();
+    }));
+
+    return result;
+});
+
+exports.getCollection = functions.https.onCall(async (data, context) => {
+    const collectionSnap = await firestore.collection('collections').doc(data.id).get();
+    return snap.data();
 });
