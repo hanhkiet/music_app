@@ -1,33 +1,35 @@
 import 'package:get/get.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:music_app/models/models.dart';
+import 'package:music_app/services/firebase_storage.dart';
 
 class PlayerController extends GetxController {
-  // var currentSong = Song(
-  //   name: '',
-  //   description: '',
-  //   url: '',
-  //   coverUrl: '',
-  // ).obs;
+  final currentSong = Song.empty().obs;
 
-  // final duration = Duration.zero.obs;
-  // final position = Duration.zero.obs;
+  final duration = Duration.zero.obs;
+  final position = Duration.zero.obs;
 
-  // AudioPlayer audioPlayer = AudioPlayer();
+  AudioPlayer audioPlayer = AudioPlayer();
 
-  // updateSong(Song newSong) {
-  //   if (newSong.url != currentSong.value.url) {
-  //     currentSong(newSong);
-  //     position(Duration.zero);
-  //     _updatePlayer();
-  //   }
-  // }
+  updateSong(Song newSong) {
+    if (newSong.storageRef != currentSong.value.storageRef) {
+      currentSong(newSong);
+      position(Duration.zero);
+      _updatePlayer();
+    }
+  }
 
-  // updatePosition(Duration newPosition) => position(newPosition);
+  updatePosition(Duration newPosition) => position(newPosition);
 
-  // _updatePlayer() {
-  //   audioPlayer.dispose();
-  //   audioPlayer = AudioPlayer();
-  //   audioPlayer.setAudioSource(AudioSource.uri(
-  //     Uri.parse('asset:///${currentSong.value.url}'),
-  //   ));
-  // }
+  _updatePlayer() async {
+    audioPlayer.dispose();
+    audioPlayer = AudioPlayer();
+
+    String url = await StorageService.getDownloadUrl(
+        'songs/${currentSong.value.storageRef}');
+
+    audioPlayer.setAudioSource(AudioSource.uri(
+      Uri.parse(url),
+    ));
+  }
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/route_manager.dart';
 import 'package:music_app/models/collection_model.dart';
 
 class CollectionCard extends StatelessWidget {
@@ -14,7 +13,7 @@ class CollectionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Get.toNamed('/collection', arguments: collection);
+        // Get.toNamed('/collection', arguments: collection);
       },
       child: Container(
         height: 75,

@@ -14,12 +14,17 @@ class DashBoard extends StatelessWidget {
       return Scaffold(
         backgroundColor: Colors.black,
         body: SafeArea(
-          child: IndexedStack(
-            index: controller.tabIndex,
-            children: const [
-              HomeScreen(),
-              FirebaseTest(),
-              UserScreen(),
+          child: Stack(
+            children: [
+              IndexedStack(
+                index: controller.tabIndex,
+                children: const [
+                  HomeScreen(),
+                  FirebaseTest(),
+                  UserScreen(),
+                ],
+              ),
+              const MinimizePlayer(),
             ],
           ),
         ),
@@ -48,5 +53,26 @@ class DashBoard extends StatelessWidget {
         ),
       );
     });
+  }
+}
+
+class MinimizePlayer extends StatelessWidget {
+  const MinimizePlayer({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.width * .1,
+        color: Colors.red,
+        child: const Center(
+          child: Text('minimize player'),
+        ),
+      ),
+    );
   }
 }

@@ -9,7 +9,6 @@ class UserScreen extends GetView<UserController> {
 
   @override
   Widget build(BuildContext context) {
-    // List<Artist> artistSamples = Artist.artistSamples;
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(

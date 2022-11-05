@@ -15,12 +15,13 @@ class HomeScreen extends GetView<HomeController> {
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              const Color.fromARGB(255, 0, 150, 158).withOpacity(.8),
-              const Color.fromARGB(255, 0, 242, 255).withOpacity(.8),
-            ]),
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            const Color.fromARGB(255, 0, 150, 158).withOpacity(.8),
+            const Color.fromARGB(255, 0, 242, 255).withOpacity(.8),
+          ],
+        ),
       ),
       child: Scaffold(
         backgroundColor: Colors.transparent,
@@ -31,8 +32,6 @@ class HomeScreen extends GetView<HomeController> {
               MusicDiscover(),
               TrendingSongsSection(),
               TopArtistSection(),
-              // MusicCollection(songSamples: songSamples),
-              // Playlist(collectionSamples: collectionSamples),
             ],
           ),
         ),
