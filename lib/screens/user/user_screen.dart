@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/state_manager.dart';
-import 'package:music_app/models/collection_model.dart';
 import 'package:music_app/screens/user/user_controller.dart';
-import 'package:music_app/widgets/widgets.dart';
 
 class UserScreen extends GetView<UserController> {
   const UserScreen({super.key});
@@ -42,46 +40,46 @@ class UserScreen extends GetView<UserController> {
   }
 }
 
-class RecentPlaylist extends StatelessWidget {
-  const RecentPlaylist({
-    Key? key,
-    required this.collectionSamples,
-    required this.title,
-  }) : super(key: key);
+// class RecentPlaylist extends StatelessWidget {
+//   const RecentPlaylist({
+//     Key? key,
+//     required this.collectionSamples,
+//     required this.title,
+//   }) : super(key: key);
 
-  final String title;
-  final List<Collection> collectionSamples;
+//   final String title;
+//   final List<Collection> collectionSamples;
 
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            title,
-            style: Theme.of(context)
-                .textTheme
-                .headline6!
-                .copyWith(fontWeight: FontWeight.bold),
-          ),
-        ),
-        ListView.builder(
-          shrinkWrap: true,
-          padding: const EdgeInsets.only(top: 15),
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: collectionSamples.length,
-          itemBuilder: (context, index) {
-            return CollectionCard(
-              collection: collectionSamples[index],
-            );
-          },
-        ),
-      ],
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Column(
+//       crossAxisAlignment: CrossAxisAlignment.start,
+//       children: [
+//         Align(
+//           alignment: Alignment.centerLeft,
+//           child: Text(
+//             title,
+//             style: Theme.of(context)
+//                 .textTheme
+//                 .headline6!
+//                 .copyWith(fontWeight: FontWeight.bold),
+//           ),
+//         ),
+//         ListView.builder(
+//           shrinkWrap: true,
+//           padding: const EdgeInsets.only(top: 15),
+//           physics: const NeverScrollableScrollPhysics(),
+//           itemCount: collectionSamples.length,
+//           itemBuilder: (context, index) {
+//             return CollectionCard(
+//               collection: collectionSamples[index],
+//             );
+//           },
+//         ),
+//       ],
+//     );
+//   }
+// }
 
 class SelectionRow extends StatelessWidget {
   const SelectionRow({

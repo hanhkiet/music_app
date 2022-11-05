@@ -1,11 +1,13 @@
 import 'dart:convert';
 
 class Artist {
+  final String id;
   final String name;
   final int followCount;
   final String coverUrl;
 
   Artist({
+    required this.id,
     required this.name,
     required this.followCount,
     required this.coverUrl,
@@ -13,6 +15,7 @@ class Artist {
 
   factory Artist.fromJson(Map<String, dynamic> json) {
     return Artist(
+      id: json['id'],
       name: json['name'],
       followCount: json['follow_count'],
       coverUrl: json['cover_url'],

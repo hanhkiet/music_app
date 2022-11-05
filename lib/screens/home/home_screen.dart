@@ -30,8 +30,8 @@ class HomeScreen extends GetView<HomeController> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: const [
               MusicDiscover(),
-              TrendingSongsSection(),
-              TopArtistSection(),
+              // TrendingSongsSection(),
+              // TopArtistSection(),
             ],
           ),
         ),
@@ -105,37 +105,37 @@ class TopArtistSection extends StatelessWidget {
   }
 }
 
-class Playlist extends StatelessWidget {
-  const Playlist({
-    Key? key,
-    required this.collections,
-  }) : super(key: key);
+// class Playlist extends StatelessWidget {
+//   const Playlist({
+//     Key? key,
+//     required this.collections,
+//   }) : super(key: key);
 
-  final List<Collection> collections;
+//   final List<Collection> collections;
 
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        children: [
-          const SectionHeader(title: 'Playlist'),
-          ListView.builder(
-            shrinkWrap: true,
-            padding: const EdgeInsets.only(top: 15),
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: collections.length,
-            itemBuilder: (context, index) {
-              return CollectionCard(
-                collection: collections[index],
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Padding(
+//       padding: const EdgeInsets.all(20),
+//       child: Column(
+//         children: [
+//           const SectionHeader(title: 'Playlist'),
+//           ListView.builder(
+//             shrinkWrap: true,
+//             padding: const EdgeInsets.only(top: 15),
+//             physics: const NeverScrollableScrollPhysics(),
+//             itemCount: collections.length,
+//             itemBuilder: (context, index) {
+//               return CollectionCard(
+//                 collection: collections[index],
+//               );
+//             },
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
 
 class MusicCollection extends StatelessWidget {
   const MusicCollection({

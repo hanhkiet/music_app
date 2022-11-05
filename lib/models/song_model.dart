@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 class Song {
+  final String id;
   final String name;
   final int favoriteCount;
   final int playCount;
@@ -8,6 +9,7 @@ class Song {
   final String storageRef;
 
   Song({
+    required this.id,
     required this.name,
     required this.favoriteCount,
     required this.playCount,
@@ -17,6 +19,7 @@ class Song {
 
   factory Song.fromJson(Map<String, dynamic> json) {
     return Song(
+      id: json['id'],
       name: json['name'],
       favoriteCount: json['favorite_count'],
       playCount: json['play_count'],
@@ -27,6 +30,7 @@ class Song {
 
   factory Song.empty() {
     return Song(
+      id: '',
       name: '',
       favoriteCount: 0,
       playCount: 0,
