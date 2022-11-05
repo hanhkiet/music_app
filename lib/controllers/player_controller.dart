@@ -22,14 +22,13 @@ class PlayerController extends GetxController {
   updatePosition(Duration newPosition) => position(newPosition);
 
   _updatePlayer() async {
-    audioPlayer.dispose();
-    audioPlayer = AudioPlayer();
+    audioPlayer.stop();
 
     String url = await StorageService.getDownloadUrl(
         'songs/${currentSong.value.storageRef}');
 
-    audioPlayer.setAudioSource(AudioSource.uri(
-      Uri.parse(url),
-    ));
+    final audioSource = LockCachingAudioSource(Uri.parse(url));
+
+    audioPlayer.setAudioSource(audioSource);
   }
 }
