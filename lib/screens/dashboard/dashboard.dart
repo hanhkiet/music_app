@@ -24,7 +24,7 @@ class DashBoard extends StatelessWidget {
                   UserScreen(),
                 ],
               ),
-              const MinimizePlayer(),
+              // const MinimizePlayer(),
             ],
           ),
         ),
