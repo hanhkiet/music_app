@@ -37,9 +37,9 @@ exports.getTrendingSongs = functions.https.onCall(async (data, context) => {
 
     const result = snap.docs.map(function (doc) {
         const id = doc.id;
-        const snapData = snap.data();
+        const data = doc.data();
 
-        return { id, ...snapData };
+        return { id, ...data };
     });
 
     return result;
@@ -50,9 +50,9 @@ exports.getTopArtists = functions.https.onCall(async (data, context) => {
 
     const result = snap.docs.map(function (doc) {
         const id = doc.id;
-        const snapData = snap.data();
+        const data = doc.data();
 
-        return { id, ...snapData };
+        return { id, ...data };
     });
 
     return result;
@@ -78,7 +78,7 @@ exports.getArtistsFromSong = functions.https.onCall(async (data, context) => {
 });
 
 exports.getTopCollections = functions.https.onCall(async (data, context) => {
-    const snap = await firestore.collection('collections').limit(5).get();
+    const snap = await firestore.collection('collections').orderBy('play_count', 'desc').limit(5).get();
 
     const result = snap.docs.map(function (doc) {
         const id = doc.id;

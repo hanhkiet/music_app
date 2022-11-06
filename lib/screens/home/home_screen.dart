@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/state_manager.dart';
 import 'package:music_app/models/models.dart';
 import 'package:music_app/screens/home/home_controller.dart';
+import 'package:music_app/services/firebase_functions.dart';
 import 'package:music_app/widgets/widgets.dart';
 
 class HomeScreen extends GetView<HomeController> {
@@ -30,8 +30,9 @@ class HomeScreen extends GetView<HomeController> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: const [
               MusicDiscover(),
-              // TrendingSongsSection(),
-              // TopArtistSection(),
+              TrendingSongsSection(),
+              TopArtistsSection(),
+              TopPlaylistsSection(),
             ],
           ),
         ),
@@ -48,8 +49,7 @@ class TrendingSongsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future:
-          FirebaseFunctions.instance.httpsCallable('getTrendingSongs').call({}),
+      future: FunctionsService.callFunction('getTrendingSongs', {}),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return Container();
@@ -57,22 +57,49 @@ class TrendingSongsSection extends StatelessWidget {
 
         final data = snapshot.data!.data.map((e) => json.encode(e)) as Iterable;
         final songs = Song.fromData(data);
-        return MusicCollection(songs: songs);
+        return SongsListView(
+          title: 'Trending songs',
+          songs: songs,
+        );
       },
     );
   }
 }
 
-class TopArtistSection extends StatelessWidget {
-  const TopArtistSection({
+class TopPlaylistsSection extends StatelessWidget {
+  const TopPlaylistsSection({
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future:
-          FirebaseFunctions.instance.httpsCallable('getTopArtists').call({}),
+      future: FunctionsService.callFunction('getTopCollections', {}),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Container();
+        }
+
+        final data = snapshot.data!.data.map((e) => json.encode(e)) as Iterable;
+        final collections = Collection.fromData(data);
+        return CollectionsListView(
+          title: 'Top playlists',
+          collections: collections,
+        );
+      },
+    );
+  }
+}
+
+class TopArtistsSection extends StatelessWidget {
+  const TopArtistsSection({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: FunctionsService.callFunction('getTopArtists', {}),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return Container();
@@ -101,80 +128,6 @@ class TopArtistSection extends StatelessWidget {
           ],
         );
       },
-    );
-  }
-}
-
-// class Playlist extends StatelessWidget {
-//   const Playlist({
-//     Key? key,
-//     required this.collections,
-//   }) : super(key: key);
-
-//   final List<Collection> collections;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Padding(
-//       padding: const EdgeInsets.all(20),
-//       child: Column(
-//         children: [
-//           const SectionHeader(title: 'Playlist'),
-//           ListView.builder(
-//             shrinkWrap: true,
-//             padding: const EdgeInsets.only(top: 15),
-//             physics: const NeverScrollableScrollPhysics(),
-//             itemCount: collections.length,
-//             itemBuilder: (context, index) {
-//               return CollectionCard(
-//                 collection: collections[index],
-//               );
-//             },
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
-
-class MusicCollection extends StatelessWidget {
-  const MusicCollection({
-    Key? key,
-    required this.songs,
-  }) : super(key: key);
-
-  final List<Song> songs;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(
-        left: 20,
-        top: 20,
-        bottom: 20,
-      ),
-      child: Column(
-        children: [
-          const Padding(
-            padding: EdgeInsets.only(
-              right: 20,
-            ),
-            child: SectionHeader(title: 'Trending music'),
-          ),
-          const SizedBox(height: 10),
-          SizedBox(
-            height: MediaQuery.of(context).size.width * .5,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.all(10),
-              itemCount: songs.length,
-              itemBuilder: (context, index) {
-                return SongCard(song: songs[index]);
-              },
-            ),
-          )
-        ],
-      ),
     );
   }
 }
