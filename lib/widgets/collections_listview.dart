@@ -29,9 +29,9 @@ class CollectionsListView extends StatelessWidget {
             ),
             child: SectionHeader(title: title),
           ),
-          // const SizedBox(height: 10),
+          const SizedBox(height: 10),
           SizedBox(
-            height: MediaQuery.of(context).size.width * .5,
+            height: MediaQuery.of(context).size.width * .6,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.all(10),

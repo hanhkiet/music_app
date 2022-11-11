@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:music_app/firebase_test.dart';
 import 'package:music_app/screens/dashboard/dashboard_controller.dart';
 import 'package:music_app/screens/home/home_screen.dart';
+import 'package:music_app/screens/search/search_screen.dart';
 import 'package:music_app/screens/user/user_screen.dart';
 
 class DashBoard extends StatelessWidget {
@@ -18,13 +18,14 @@ class DashBoard extends StatelessWidget {
             children: [
               IndexedStack(
                 index: controller.tabIndex,
-                children: const [
-                  HomeScreen(),
-                  FirebaseTest(),
-                  UserScreen(),
+                children: [
+                  const HomeScreen(),
+                  const SearchScreen(),
+                  Container(),
+                  const UserScreen(),
                 ],
               ),
-              // const MinimizePlayer(),
+              const MinimizePlayer(height: 60),
             ],
           ),
         ),
@@ -46,6 +47,10 @@ class DashBoard extends StatelessWidget {
               label: 'Search',
             ),
             BottomNavigationBarItem(
+              icon: Icon(Icons.playlist_play_rounded),
+              label: 'Library',
+            ),
+            BottomNavigationBarItem(
               icon: Icon(Icons.person),
               label: 'User',
             ),
@@ -59,7 +64,10 @@ class DashBoard extends StatelessWidget {
 class MinimizePlayer extends StatelessWidget {
   const MinimizePlayer({
     Key? key,
+    required this.height,
   }) : super(key: key);
+
+  final double height;
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +75,7 @@ class MinimizePlayer extends StatelessWidget {
       alignment: Alignment.bottomCenter,
       child: Container(
         width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.width * .1,
+        height: height,
         color: Colors.red,
         child: const Center(
           child: Text('minimize player'),

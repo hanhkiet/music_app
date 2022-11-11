@@ -8,6 +8,7 @@ class PlayerController extends GetxController {
 
   final duration = Duration.zero.obs;
   final position = Duration.zero.obs;
+  final loopMode = LoopMode.one.obs;
 
   AudioPlayer audioPlayer = AudioPlayer();
 
@@ -19,7 +20,16 @@ class PlayerController extends GetxController {
     }
   }
 
-  updatePosition(Duration newPosition) => position(newPosition);
+  updatePosition(Duration newPosition) {
+    position(newPosition);
+    update();
+  }
+
+  updateMode(LoopMode mode) async {
+    loopMode(mode);
+    await audioPlayer.setLoopMode(mode);
+    update();
+  }
 
   _updatePlayer() async {
     audioPlayer.stop();

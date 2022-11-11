@@ -23,15 +23,15 @@ class SongsListView extends StatelessWidget {
       ),
       child: Column(
         children: [
-          const Padding(
-            padding: EdgeInsets.only(
+          Padding(
+            padding: const EdgeInsets.only(
               right: 20,
             ),
-            child: SectionHeader(title: 'Trending music'),
+            child: SectionHeader(title: title),
           ),
           const SizedBox(height: 10),
           SizedBox(
-            height: MediaQuery.of(context).size.width * .5,
+            height: MediaQuery.of(context).size.width * .6,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.all(10),

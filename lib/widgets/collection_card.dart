@@ -19,11 +19,12 @@ class CollectionCard extends StatelessWidget {
         Get.toNamed('/collection', arguments: collection);
       },
       child: Container(
-        margin: const EdgeInsets.only(right: 10),
-        child: Stack(
-          alignment: Alignment.bottomCenter,
+        margin: const EdgeInsets.only(right: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CoverImage(collection: collection),
+            const SizedBox(height: 5),
             TitleBanner(collection: collection),
           ],
         ),
@@ -42,22 +43,28 @@ class TitleBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 50,
-      width: MediaQuery.of(context).size.width * .37,
-      margin: const EdgeInsets.only(bottom: 10),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
-        color: Colors.white.withOpacity(.8),
-      ),
-      child: Center(
-        child: Text(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
           collection.name,
-          style: Theme.of(context).textTheme.bodySmall!.copyWith(
-              color: const Color.fromARGB(255, 0, 150, 158),
-              fontWeight: FontWeight.bold),
+          style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.w400,
+              ),
+          overflow: TextOverflow.ellipsis,
+          maxLines: 1,
         ),
-      ),
+        Text(
+          'artists',
+          style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.w400,
+              ),
+          overflow: TextOverflow.ellipsis,
+          maxLines: 1,
+        ),
+      ],
     );
   }
 }
@@ -83,7 +90,7 @@ class CoverImage extends StatelessWidget {
         return CachedNetworkImage(
           imageUrl: url,
           imageBuilder: (context, imageProvider) => Container(
-            width: MediaQuery.of(context).size.width * .4,
+            width: MediaQuery.of(context).size.width * .35,
             height: MediaQuery.of(context).size.width * .4,
             decoration: BoxDecoration(
               image: DecorationImage(
@@ -93,7 +100,13 @@ class CoverImage extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
             ),
           ),
-          placeholder: (context, url) => const CircularProgressIndicator(),
+          placeholder: (context, url) => SizedBox(
+            width: MediaQuery.of(context).size.width * .35,
+            height: MediaQuery.of(context).size.width * .4,
+            child: const Center(
+              child: CircularProgressIndicator(),
+            ),
+          ),
         );
       },
     );

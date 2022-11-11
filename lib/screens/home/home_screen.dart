@@ -33,6 +33,7 @@ class HomeScreen extends GetView<HomeController> {
               TrendingSongsSection(),
               TopArtistsSection(),
               TopPlaylistsSection(),
+              SizedBox(height: 60),
             ],
           ),
         ),
@@ -114,7 +115,7 @@ class TopArtistsSection extends StatelessWidget {
               child: SectionHeader(title: 'Top artists'),
             ),
             SizedBox(
-              height: MediaQuery.of(context).size.width * .7,
+              height: MediaQuery.of(context).size.width * .5,
               child: ListView.builder(
                 shrinkWrap: true,
                 scrollDirection: Axis.horizontal,

@@ -52,59 +52,62 @@ class _SeekBarState extends State<SeekBar> {
               )
             : const Text(''),
         const SizedBox(height: 10),
-        Row(
+        Column(
           children: [
-            Text(_formatDuration(widget.position)),
-            Expanded(
-              child: SliderTheme(
-                data: SliderTheme.of(context).copyWith(
-                  trackHeight: 4,
-                  thumbShape: const RoundSliderThumbShape(
-                    disabledThumbRadius: 4,
-                    enabledThumbRadius: 4,
-                  ),
-                  overlayShape: const RoundSliderOverlayShape(
-                    overlayRadius: 10,
-                  ),
-                  activeTrackColor: Colors.white.withOpacity(.2),
-                  inactiveTrackColor: Colors.white,
-                  thumbColor: Colors.white,
-                  overlayColor: Colors.white,
+            SliderTheme(
+              data: SliderTheme.of(context).copyWith(
+                trackHeight: 6,
+                thumbShape: const RoundSliderThumbShape(
+                  disabledThumbRadius: 8,
+                  enabledThumbRadius: 6,
                 ),
-                child: Slider(
-                  min: 0.0,
-                  max: max(widget.duration.inMilliseconds.toDouble(),
-                      widget.position.inMilliseconds.toDouble()),
-                  value: _draggingValue ??
-                      min(
-                        _dragValue ?? widget.position.inMilliseconds.toDouble(),
-                        widget.position.inMilliseconds.toDouble(),
+                overlayShape: const RoundSliderOverlayShape(
+                  overlayRadius: 10,
+                ),
+                activeTrackColor: Colors.white.withOpacity(.2),
+                inactiveTrackColor: Colors.white,
+                thumbColor: Colors.white,
+                overlayColor: Colors.white,
+              ),
+              child: Slider(
+                min: 0.0,
+                max: max(widget.duration.inMilliseconds.toDouble(),
+                    widget.position.inMilliseconds.toDouble()),
+                value: _draggingValue ??
+                    min(
+                      _dragValue ?? widget.position.inMilliseconds.toDouble(),
+                      widget.position.inMilliseconds.toDouble(),
+                    ),
+                onChanged: (value) {
+                  setState(() {
+                    _draggingValue = value;
+                  });
+                },
+                onChangeEnd: (value) {
+                  setState(() {
+                    _dragValue = value;
+                  });
+
+                  if (widget.onChangedEnd != null) {
+                    widget.onChangedEnd!(
+                      Duration(
+                        milliseconds: value.round(),
                       ),
-                  onChanged: (value) {
-                    setState(() {
-                      _draggingValue = value;
-                    });
-                  },
-                  onChangeEnd: (value) {
-                    setState(() {
-                      _dragValue = value;
-                    });
+                    );
+                  }
 
-                    if (widget.onChangedEnd != null) {
-                      widget.onChangedEnd!(
-                        Duration(
-                          milliseconds: value.round(),
-                        ),
-                      );
-                    }
-
-                    _dragValue = null;
-                    _draggingValue = null;
-                  },
-                ),
+                  _dragValue = null;
+                  _draggingValue = null;
+                },
               ),
             ),
-            Text(_formatDuration(widget.duration)),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(_formatDuration(widget.position)),
+                Text(_formatDuration(widget.duration)),
+              ],
+            ),
           ],
         ),
       ],

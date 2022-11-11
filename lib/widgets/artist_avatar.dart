@@ -20,7 +20,13 @@ class ArtistAvatar extends StatelessWidget {
           .getDownloadURL(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return const CircularProgressIndicator();
+          return SizedBox(
+            width: MediaQuery.of(context).size.width * .15,
+            height: MediaQuery.of(context).size.height * .15,
+            child: const Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
         }
 
         String url = snapshot.data!;
@@ -29,16 +35,30 @@ class ArtistAvatar extends StatelessWidget {
           imageBuilder: (context, imageProvider) => Column(
             children: [
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(10),
                 child: CircleAvatar(
                   backgroundImage: imageProvider,
-                  radius: MediaQuery.of(context).size.width * .2,
+                  radius: MediaQuery.of(context).size.width * .15,
                 ),
               ),
-              Text(artist.name),
+              Text(
+                artist.name,
+                style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                    ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
             ],
           ),
-          placeholder: (context, url) => const CircularProgressIndicator(),
+          placeholder: (context, url) => SizedBox(
+            width: MediaQuery.of(context).size.width * .15,
+            height: MediaQuery.of(context).size.height * .15,
+            child: const Center(
+              child: CircularProgressIndicator(),
+            ),
+          ),
         );
       },
     );

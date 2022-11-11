@@ -59,13 +59,14 @@ class MusicPlayer extends StatelessWidget {
     final Song song = playerController.currentSong.value;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 20,
-        vertical: 60,
+      padding: const EdgeInsets.only(
+        left: 20,
+        right: 20,
+        bottom: 40,
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           FutureBuilder(
             future: StorageService.getDownloadUrl('covers/${song.coverUrl}'),
@@ -78,8 +79,8 @@ class MusicPlayer extends StatelessWidget {
               return CachedNetworkImage(
                 imageUrl: url,
                 imageBuilder: (context, imageProvider) => Container(
-                  width: MediaQuery.of(context).size.width * .9,
-                  height: MediaQuery.of(context).size.width * .9,
+                  width: MediaQuery.of(context).size.width * .8,
+                  height: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
                     image: DecorationImage(
                       image: imageProvider,
@@ -88,8 +89,13 @@ class MusicPlayer extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                placeholder: (context, url) =>
-                    const CircularProgressIndicator(),
+                placeholder: (context, url) => SizedBox(
+                  width: MediaQuery.of(context).size.width * .8,
+                  height: MediaQuery.of(context).size.width,
+                  child: const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
               );
             },
           ),
@@ -113,9 +119,71 @@ class MusicPlayer extends StatelessWidget {
               );
             },
           ),
-          PlayerButton(audioPlayer: audioPlayer)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const RepeatButton(),
+              PlayerButton(audioPlayer: audioPlayer),
+              const PlaylistButton(),
+            ],
+          )
         ],
       ),
     );
+  }
+}
+
+class PlaylistButton extends StatelessWidget {
+  const PlaylistButton({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const Icon(
+      Icons.playlist_play_rounded,
+      color: Colors.white,
+      size: 35,
+    );
+  }
+}
+
+class RepeatButton extends StatelessWidget {
+  const RepeatButton({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final PlayerController playerController = Get.find();
+    return Obx(() {
+      if (playerController.loopMode.value == LoopMode.off) {
+        return IconButton(
+          onPressed: () {
+            playerController.updateMode(LoopMode.one);
+          },
+          icon: const Icon(
+            Icons.repeat_rounded,
+            color: Colors.white,
+          ),
+          iconSize: 35,
+        );
+      } else if (playerController.loopMode.value == LoopMode.one) {
+        return IconButton(
+          onPressed: () => playerController.updateMode(LoopMode.off),
+          icon: const Icon(
+            Icons.repeat_one_rounded,
+            color: Colors.white,
+          ),
+          iconSize: 35,
+        );
+      } else {
+        return const Icon(
+          Icons.error,
+          color: Colors.white,
+          size: 35,
+        );
+      }
+    });
   }
 }

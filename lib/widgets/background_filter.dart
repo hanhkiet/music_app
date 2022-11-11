@@ -27,8 +27,8 @@ class BackgroundFilter extends StatelessWidget {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Color.fromARGB(255, 0, 150, 158),
-              Color.fromARGB(255, 0, 242, 255),
+              Color.fromARGB(255, 0, 121, 127),
+              Color.fromARGB(255, 0, 167, 176),
             ],
           ),
         ),
