@@ -25,7 +25,7 @@ class SongScreen extends StatelessWidget {
       body: Stack(
         fit: StackFit.expand,
         children: const [
-          BackgroundFilter(),
+          Background(),
           MusicPlayer(),
         ],
       ),
@@ -36,6 +36,57 @@ class SongScreen extends StatelessWidget {
     final Song newSong = Get.arguments;
     final PlayerController controller = Get.find();
     controller.updateSong(newSong);
+  }
+}
+
+class Background extends StatelessWidget {
+  const Background({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final PlayerController playerController = Get.find();
+    final Song song = playerController.currentSong.value;
+
+    return ShaderMask(
+      shaderCallback: (rect) {
+        return LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Colors.black.withOpacity(0.2),
+            Colors.black.withOpacity(0.5),
+            Colors.black.withOpacity(0.9),
+          ],
+          stops: const [0, 0.3, 0.6],
+        ).createShader(rect);
+      },
+      blendMode: BlendMode.darken,
+      child: FutureBuilder(
+        future: StorageService.getDownloadUrl('covers/${song.coverUrl}'),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Container();
+          }
+
+          String url = snapshot.data!;
+          return CachedNetworkImage(
+            imageUrl: url,
+            imageBuilder: (context, imageProvider) => Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: imageProvider,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
   }
 }
 
@@ -72,7 +123,7 @@ class MusicPlayer extends StatelessWidget {
             future: StorageService.getDownloadUrl('covers/${song.coverUrl}'),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
-                return const CircularProgressIndicator();
+                return Container();
               }
 
               String url = snapshot.data!;

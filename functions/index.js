@@ -77,7 +77,7 @@ exports.getArtistsFromSong = functions.https.onCall(async (data, context) => {
     return result;
 });
 
-exports.getTopCollections = functions.https.onCall(async (data, context) => {
+exports.getPopularCollections = functions.https.onCall(async (data, context) => {
     const snap = await firestore.collection('collections').orderBy('play_count', 'desc').limit(5).get();
 
     const result = snap.docs.map(function (doc) {
@@ -105,6 +105,23 @@ exports.getCollectionsFromArtist = functions.https.onCall(async (data, context) 
 
         return { id: snapId, ...snapData };
     }));
+
+    return result;
+});
+
+exports.getPopularSongsFromArtist = functions.https.onCall(async (data, context) => {
+    const id = data.artistId;
+    if (id == null) return {};
+
+    const songSnap = await firestore.collection('songs').where('artists', 'array-contains', id)
+        .orderBy('play_count', 'desc').limit(10).get();
+
+    const result = songSnap.docs.map(function (doc) {
+        const docId = doc.id;
+        const data = doc.data();
+
+        return { id: docId, ...data };
+    });
 
     return result;
 });

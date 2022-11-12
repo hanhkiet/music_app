@@ -45,7 +45,7 @@ class NotSignedUserWidget extends StatelessWidget {
     return Center(
       child: SizedBox(
         width: double.infinity,
-        height: MediaQuery.of(context).size.height * .15,
+        height: MediaQuery.of(context).size.height * .2,
         child: Column(
           children: [
             const CircleAvatar(
@@ -89,37 +89,32 @@ class SignedUserWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = AuthService.currentUser!;
+    final user = AuthService.currentUser;
 
     return Center(
       child: SizedBox(
-        width: double.infinity,
+        width: MediaQuery.of(context).size.width * .5,
         height: MediaQuery.of(context).size.height * .3,
         child: Column(
           children: [
-            Text(user.uid),
-            const SizedBox(height: 10),
-            Text(user.displayName ?? ''),
-            const SizedBox(height: 10),
-            const CircleAvatar(
-              radius: 30,
-              child: Icon(
-                Icons.person,
-                size: 40,
-              ),
+            CircleAvatar(
+              backgroundColor: Colors.red,
+              radius: MediaQuery.of(context).size.width * .15,
             ),
-            const SizedBox(height: 5),
-            TextButton(
+            const SizedBox(height: 10),
+            Text(
+              user!.displayName.toString(),
+              style: Theme.of(context)
+                  .textTheme
+                  .headline4!
+                  .copyWith(color: Colors.white),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+            ),
+            const SizedBox(height: 20),
+            IconButton(
               onPressed: () => _showSignOutDialog(context),
-              style: TextButton.styleFrom(
-                backgroundColor: Colors.white,
-              ),
-              child: Text(
-                'Log out',
-                style: Theme.of(context).textTheme.headline6!.copyWith(
-                      color: const Color.fromARGB(255, 0, 150, 158),
-                    ),
-              ),
+              icon: const Icon(Icons.logout_rounded),
             ),
           ],
         ),

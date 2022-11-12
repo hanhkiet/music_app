@@ -32,7 +32,7 @@ class CollectionScreen extends GetView<CollectionController> {
         ),
         backgroundColor: Colors.transparent,
         body: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(10),
           child: Column(
             children: [
               const CollectionInformation(),
@@ -74,24 +74,79 @@ class SongList extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       itemCount: songs.length,
       itemBuilder: (context, index) {
-        return ListTile(
-          leading: Text(
-            '${index + 1}',
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium!
-                .copyWith(fontWeight: FontWeight.bold),
+        return InkWell(
+          onTap: () {
+            Get.toNamed(
+              '/song',
+              arguments: songs[index],
+            );
+          },
+          child: ListTile(
+            leading: CoverImage(song: songs[index]),
+            title: Text(
+              songs[index].name,
+              style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+            subtitle: Text(
+              'artists',
+              style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                    fontWeight: FontWeight.normal,
+                  ),
+            ),
+            trailing: IconButton(
+              onPressed: () {},
+              icon: const Icon(
+                Icons.more_vert_rounded,
+              ),
+              color: Colors.white,
+            ),
           ),
-          title: Text(
-            songs[index].name,
-            style: Theme.of(context)
-                .textTheme
-                .bodyLarge!
-                .copyWith(fontWeight: FontWeight.bold),
+        );
+      },
+    );
+  }
+}
+
+class CoverImage extends StatelessWidget {
+  const CoverImage({
+    Key? key,
+    required this.song,
+  }) : super(key: key);
+
+  final Song song;
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: StorageService.getDownloadUrl('covers/${song.coverUrl}'),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Container(
+            width: 50,
+            height: 50,
+            color: Colors.black38,
+          );
+        }
+
+        String url = snapshot.data!;
+        return CachedNetworkImage(
+          imageUrl: url,
+          imageBuilder: (context, imageProvider) => Container(
+            width: 50,
+            height: 50,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: imageProvider,
+                fit: BoxFit.cover,
+              ),
+            ),
           ),
-          trailing: const Icon(
-            Icons.more_vert,
-            color: Colors.white,
+          placeholder: (context, url) => Container(
+            width: 50,
+            height: 50,
+            color: Colors.black38,
           ),
         );
       },

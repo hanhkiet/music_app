@@ -19,8 +19,8 @@ class SongCard extends StatelessWidget {
         Get.toNamed('/song', arguments: song);
       },
       child: Container(
-        margin: const EdgeInsets.only(right: 10),
-        width: MediaQuery.of(context).size.width * .4,
+        margin: const EdgeInsets.only(right: 5),
+        width: MediaQuery.of(context).size.width * .4 - 10,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

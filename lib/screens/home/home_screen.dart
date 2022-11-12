@@ -24,17 +24,19 @@ class HomeScreen extends GetView<HomeController> {
         ),
       ),
       child: Scaffold(
+        extendBodyBehindAppBar: true,
         backgroundColor: Colors.transparent,
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              MusicDiscover(),
-              TrendingSongsSection(),
-              TopArtistsSection(),
-              TopPlaylistsSection(),
-              SizedBox(height: 60),
-            ],
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: const [
+                MusicDiscover(),
+                TrendingSongsSection(),
+                TopArtistsSection(),
+                TopPlaylistsSection(),
+              ],
+            ),
           ),
         ),
       ),
@@ -75,7 +77,7 @@ class TopPlaylistsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: FunctionsService.callFunction('getTopCollections', {}),
+      future: FunctionsService.callFunction('getPopularCollections', {}),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return Container();
@@ -108,25 +110,31 @@ class TopArtistsSection extends StatelessWidget {
 
         final data = snapshot.data!.data.map((e) => json.encode(e));
         final artists = Artist.fromData(data);
-        return Column(
-          children: [
-            const Padding(
-              padding: EdgeInsets.only(left: 20),
-              child: SectionHeader(title: 'Top artists'),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.width * .5,
-              child: ListView.builder(
-                shrinkWrap: true,
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.all(10),
-                itemCount: artists.length,
-                itemBuilder: (context, index) {
-                  return ArtistAvatar(artist: artists[index]);
-                },
+        return Padding(
+          padding: const EdgeInsets.only(
+            left: 20,
+            top: 20,
+          ),
+          child: Column(
+            children: [
+              const Padding(
+                padding: EdgeInsets.only(left: 10),
+                child: SectionHeader(title: 'Top artists'),
               ),
-            )
-          ],
+              SizedBox(
+                height: MediaQuery.of(context).size.width * .5,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.all(10),
+                  itemCount: artists.length,
+                  itemBuilder: (context, index) {
+                    return ArtistAvatar(artist: artists[index]);
+                  },
+                ),
+              )
+            ],
+          ),
         );
       },
     );

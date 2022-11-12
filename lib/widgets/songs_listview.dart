@@ -19,13 +19,12 @@ class SongsListView extends StatelessWidget {
       padding: const EdgeInsets.only(
         left: 20,
         top: 20,
-        bottom: 20,
       ),
       child: Column(
         children: [
           Padding(
             padding: const EdgeInsets.only(
-              right: 20,
+              right: 10,
             ),
             child: SectionHeader(title: title),
           ),
@@ -34,7 +33,7 @@ class SongsListView extends StatelessWidget {
             height: MediaQuery.of(context).size.width * .6,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.all(10),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
               itemCount: songs.length,
               itemBuilder: (context, index) {
                 return SongCard(song: songs[index]);
