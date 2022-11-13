@@ -41,7 +41,9 @@ class PlayerButton extends StatelessWidget {
                   width: 64,
                   height: 64,
                   margin: const EdgeInsets.all(10),
-                  child: const CircularProgressIndicator(),
+                  child: const CircularProgressIndicator(
+                    backgroundColor: Colors.white,
+                  ),
                 );
               } else if (!audioPlayer.playing) {
                 return IconButton(
@@ -73,7 +75,9 @@ class PlayerButton extends StatelessWidget {
                 );
               }
             } else {
-              return const CircularProgressIndicator();
+              return const CircularProgressIndicator(
+                backgroundColor: Colors.white,
+              );
             }
           },
         ),

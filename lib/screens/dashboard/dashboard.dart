@@ -12,22 +12,21 @@ class DashBoard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<DashBoardController>(builder: (controller) {
       return Scaffold(
-        backgroundColor: Colors.black,
-        body: SafeArea(
-          child: Stack(
-            children: [
-              IndexedStack(
-                index: controller.tabIndex,
-                children: [
-                  const HomeScreen(),
-                  const SearchScreen(),
-                  Container(),
-                  const UserScreen(),
-                ],
-              ),
-              // const MinimizePlayer(height: 60),
-            ],
-          ),
+        backgroundColor: Colors.transparent,
+        extendBodyBehindAppBar: true,
+        body: Stack(
+          children: [
+            IndexedStack(
+              index: controller.tabIndex,
+              children: [
+                const HomeScreen(),
+                const SearchScreen(),
+                Container(),
+                const UserScreen(),
+              ],
+            ),
+            // const MinimizePlayer(height: 60),
+          ],
         ),
         bottomNavigationBar: BottomNavigationBar(
           onTap: controller.changeTabIndex,

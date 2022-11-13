@@ -20,14 +20,16 @@ class SearchScreen extends GetView<SearchController> {
       ),
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              Title(),
-              SizedBox(height: 15),
-              SearchBar(),
-            ],
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: const [
+                Title(),
+                SizedBox(height: 15),
+                SearchBar(),
+              ],
+            ),
           ),
         ),
       ),
