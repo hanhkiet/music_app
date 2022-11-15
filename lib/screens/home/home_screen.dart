@@ -5,6 +5,7 @@ import 'package:get/state_manager.dart';
 import 'package:music_app/models/models.dart';
 import 'package:music_app/screens/home/home_controller.dart';
 import 'package:music_app/services/firebase_functions.dart';
+import 'package:music_app/widgets/background.dart';
 import 'package:music_app/widgets/widgets.dart';
 
 class HomeScreen extends GetView<HomeController> {
@@ -12,17 +13,7 @@ class HomeScreen extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            const Color.fromARGB(255, 0, 150, 158).withOpacity(.8),
-            const Color.fromARGB(255, 0, 242, 255).withOpacity(.8),
-          ],
-        ),
-      ),
+    return Background(
       child: Scaffold(
         extendBodyBehindAppBar: true,
         backgroundColor: Colors.transparent,
@@ -123,14 +114,20 @@ class TopArtistsSection extends StatelessWidget {
               ),
               SizedBox(
                 height: MediaQuery.of(context).size.width * .5,
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.all(10),
-                  itemCount: artists.length,
-                  itemBuilder: (context, index) {
-                    return ArtistAvatar(artist: artists[index]);
+                child: NotificationListener<OverscrollIndicatorNotification>(
+                  onNotification: (overscroll) {
+                    overscroll.disallowIndicator();
+                    return false;
                   },
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.all(10),
+                    itemCount: artists.length,
+                    itemBuilder: (context, index) {
+                      return ArtistAvatar(artist: artists[index]);
+                    },
+                  ),
                 ),
               )
             ],

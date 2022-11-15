@@ -4,6 +4,7 @@ import 'package:music_app/screens/dashboard/dashboard_controller.dart';
 import 'package:music_app/screens/home/home_screen.dart';
 import 'package:music_app/screens/search/search_screen.dart';
 import 'package:music_app/screens/user/user_screen.dart';
+import 'package:music_app/themes.dart';
 
 class DashBoard extends StatelessWidget {
   const DashBoard({super.key});
@@ -29,10 +30,11 @@ class DashBoard extends StatelessWidget {
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(
+          elevation: 0,
           onTap: controller.changeTabIndex,
           currentIndex: controller.tabIndex,
           type: BottomNavigationBarType.fixed,
-          backgroundColor: const Color.fromARGB(255, 0, 171, 180),
+          backgroundColor: AppTheme.accent,
           unselectedItemColor: Colors.white.withOpacity(.7),
           selectedItemColor: Colors.white,
           showUnselectedLabels: false,
@@ -57,29 +59,5 @@ class DashBoard extends StatelessWidget {
         ),
       );
     });
-  }
-}
-
-class MinimizePlayer extends StatelessWidget {
-  const MinimizePlayer({
-    Key? key,
-    required this.height,
-  }) : super(key: key);
-
-  final double height;
-
-  @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.bottomCenter,
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        height: height,
-        color: Colors.red,
-        child: const Center(
-          child: Text('minimize player'),
-        ),
-      ),
-    );
   }
 }

@@ -7,6 +7,7 @@ import 'package:music_app/models/models.dart';
 import 'package:music_app/screens/artist/artist_controller.dart';
 import 'package:music_app/services/firebase_functions.dart';
 import 'package:music_app/services/firebase_storage.dart';
+import 'package:music_app/widgets/background.dart';
 import 'package:music_app/widgets/widgets.dart';
 
 class ArtistScreen extends GetView<ArtistController> {
@@ -16,17 +17,7 @@ class ArtistScreen extends GetView<ArtistController> {
   Widget build(BuildContext context) {
     final Artist artist = Get.arguments;
 
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            const Color.fromARGB(255, 0, 150, 158).withOpacity(.8),
-            const Color.fromARGB(255, 0, 242, 255).withOpacity(.8),
-          ],
-        ),
-      ),
+    return Background(
       child: Scaffold(
         extendBodyBehindAppBar: true,
         appBar: AppBar(

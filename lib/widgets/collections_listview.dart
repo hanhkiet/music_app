@@ -32,13 +32,19 @@ class CollectionsListView extends StatelessWidget {
           const SizedBox(height: 10),
           SizedBox(
             height: MediaQuery.of(context).size.width * .6,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.all(10),
-              itemCount: collections.length,
-              itemBuilder: (context, index) {
-                return CollectionCard(collection: collections[index]);
+            child: NotificationListener<OverscrollIndicatorNotification>(
+              onNotification: (overscroll) {
+                overscroll.disallowIndicator();
+                return false;
               },
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.all(10),
+                itemCount: collections.length,
+                itemBuilder: (context, index) {
+                  return CollectionCard(collection: collections[index]);
+                },
+              ),
             ),
           )
         ],

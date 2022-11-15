@@ -43,4 +43,9 @@ class AuthService {
   static Future<void> signOut() async {
     instance.signOut();
   }
+
+  static Future<void> updateDisplayName(String displayName) async =>
+      await currentUser?.updateDisplayName(displayName);
+  static Future<void> updatePassword(String newPassword) async =>
+      await currentUser?.updatePassword(newPassword);
 }

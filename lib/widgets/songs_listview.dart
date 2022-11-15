@@ -31,13 +31,20 @@ class SongsListView extends StatelessWidget {
           const SizedBox(height: 10),
           SizedBox(
             height: MediaQuery.of(context).size.width * .6,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              itemCount: songs.length,
-              itemBuilder: (context, index) {
-                return SongCard(song: songs[index]);
+            child: NotificationListener<OverscrollIndicatorNotification>(
+              onNotification: (overscroll) {
+                overscroll.disallowIndicator();
+                return false;
               },
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                itemCount: songs.length,
+                itemBuilder: (context, index) {
+                  return SongCard(song: songs[index]);
+                },
+              ),
             ),
           )
         ],

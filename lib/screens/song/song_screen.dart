@@ -4,12 +4,13 @@ import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:music_app/controllers/player_controller.dart';
 import 'package:music_app/models/models.dart';
+import 'package:music_app/screens/song/song_controller.dart';
 import 'package:music_app/services/firebase_storage.dart';
 import 'package:music_app/widgets/seekbar.dart';
 import 'package:music_app/widgets/widgets.dart';
 import 'package:rxdart/rxdart.dart' as rxdart;
 
-class SongScreen extends StatelessWidget {
+class SongScreen extends GetView<SongController> {
   const SongScreen({super.key});
 
   @override
@@ -25,7 +26,7 @@ class SongScreen extends StatelessWidget {
       body: Stack(
         fit: StackFit.expand,
         children: const [
-          Background(),
+          BackgroundFilter(),
           MusicPlayer(),
         ],
       ),
@@ -39,8 +40,8 @@ class SongScreen extends StatelessWidget {
   }
 }
 
-class Background extends StatelessWidget {
-  const Background({
+class BackgroundFilter extends StatelessWidget {
+  const BackgroundFilter({
     Key? key,
   }) : super(key: key);
 
@@ -55,9 +56,9 @@ class Background extends StatelessWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Colors.black.withOpacity(0.2),
-            Colors.black.withOpacity(0.5),
-            Colors.black.withOpacity(0.9),
+            Colors.black.withOpacity(0.3),
+            Colors.black.withOpacity(0.6),
+            Colors.black.withOpacity(1),
           ],
           stops: const [0, 0.3, 0.6],
         ).createShader(rect);
@@ -82,6 +83,11 @@ class Background extends StatelessWidget {
                   fit: BoxFit.cover,
                 ),
               ),
+            ),
+            placeholder: (context, url) => Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              color: Colors.black,
             ),
           );
         },
@@ -119,45 +125,7 @@ class MusicPlayer extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          FutureBuilder(
-            future: StorageService.getDownloadUrl('covers/${song.coverUrl}'),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return Container();
-              }
-
-              String url = snapshot.data!;
-              return CachedNetworkImage(
-                imageUrl: url,
-                imageBuilder: (context, imageProvider) => Container(
-                  width: MediaQuery.of(context).size.width * .8,
-                  height: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: imageProvider,
-                      fit: BoxFit.cover,
-                    ),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                placeholder: (context, url) => SizedBox(
-                  width: MediaQuery.of(context).size.width * .8,
-                  height: MediaQuery.of(context).size.width,
-                  child: const Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                ),
-              );
-            },
-          ),
-          const SizedBox(height: 30),
-          Text(
-            song.name,
-            style: Theme.of(context)
-                .textTheme
-                .headlineSmall!
-                .copyWith(color: Colors.white, fontWeight: FontWeight.bold),
-          ),
+          SongInformation(song: song),
           const SizedBox(height: 10),
           StreamBuilder<SeekBarData>(
             stream: _getSeekBarDataStream(audioPlayer),
@@ -180,6 +148,62 @@ class MusicPlayer extends StatelessWidget {
           )
         ],
       ),
+    );
+  }
+}
+
+class SongInformation extends StatelessWidget {
+  const SongInformation({
+    Key? key,
+    required this.song,
+  }) : super(key: key);
+
+  final Song song;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        FutureBuilder(
+          future: StorageService.getDownloadUrl('covers/${song.coverUrl}'),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return Container();
+            }
+
+            String url = snapshot.data!;
+            return CachedNetworkImage(
+              imageUrl: url,
+              imageBuilder: (context, imageProvider) => Container(
+                width: MediaQuery.of(context).size.width * .8,
+                height: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: imageProvider,
+                    fit: BoxFit.cover,
+                  ),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              placeholder: (context, url) => SizedBox(
+                width: MediaQuery.of(context).size.width * .8,
+                height: MediaQuery.of(context).size.width,
+                child: const Center(
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+            );
+          },
+        ),
+        const SizedBox(height: 30),
+        Text(
+          song.name,
+          style: Theme.of(context)
+              .textTheme
+              .headlineSmall!
+              .copyWith(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+      ],
     );
   }
 }
