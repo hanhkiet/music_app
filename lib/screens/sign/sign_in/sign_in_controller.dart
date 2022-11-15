@@ -5,6 +5,8 @@ class SignInController extends GetxController {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
+  final isObscurePasswordField = true.obs;
+
   final hasError = false.obs;
   final message = ''.obs;
 
@@ -14,6 +16,9 @@ class SignInController extends GetxController {
   updateErrorStatus(bool status, {String message = ''}) {
     hasError(status);
     this.message(message);
-    update();
+  }
+
+  toggleObscurePasswordField() {
+    isObscurePasswordField(!isObscurePasswordField.value);
   }
 }

@@ -114,72 +114,84 @@ class SignInSection extends GetView<SignInController> {
           ),
         ),
         const SizedBox(height: 10),
-        const Text(
-          'or',
-        ),
-        const SizedBox(height: 10),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: SizedBox(
-            height: 45,
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                elevation: 0,
-                backgroundColor: Colors.white,
-              ),
-              child: Text(
-                'Google',
-                style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                      color: Colors.black,
-                    ),
-              ),
-            ),
-          ),
-        ),
+        // const Text(
+        //   'or',
+        // ),
+        // const SizedBox(height: 10),
+        // Padding(
+        //   padding: const EdgeInsets.symmetric(horizontal: 20),
+        //   child: SizedBox(
+        //     height: 45,
+        //     width: double.infinity,
+        //     child: ElevatedButton(
+        //       onPressed: _signInWithGoogle,
+        //       style: ElevatedButton.styleFrom(
+        //         elevation: 0,
+        //         backgroundColor: Colors.white,
+        //       ),
+        //       child: Text(
+        //         'Google',
+        //         style: Theme.of(context).textTheme.bodyText1!.copyWith(
+        //               color: Colors.black,
+        //             ),
+        //       ),
+        //     ),
+        //   ),
+        // ),
       ],
     );
   }
 
   Widget buildPasswordField() {
-    return TextFormField(
-      controller: controller.passwordController,
-      autovalidateMode: AutovalidateMode.onUserInteraction,
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Please enter password!';
-        }
+    return Obx(
+      () => TextFormField(
+        controller: controller.passwordController,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Please enter password!';
+          }
 
-        if (value.length < 6) {
-          return 'Password length is at least 6 characters';
-        }
+          if (value.length < 6) {
+            return 'Password length is at least 6 characters';
+          }
 
-        return null;
-      },
-      style: const TextStyle(fontSize: 20),
-      keyboardType: TextInputType.text,
-      cursorColor: Colors.white,
-      obscureText: true,
-      decoration: const InputDecoration(
-        suffixIcon: Icon(
-          Icons.visibility,
-          color: Colors.white,
-        ),
-        contentPadding: EdgeInsets.symmetric(
-          horizontal: 15,
-          vertical: 5,
-        ),
-        border: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: Colors.black38,
+          return null;
+        },
+        style: const TextStyle(fontSize: 20),
+        keyboardType: TextInputType.text,
+        cursorColor: Colors.white,
+        obscureText: controller.isObscurePasswordField.value,
+        decoration: InputDecoration(
+          suffixIcon:
+              buildToggleObscureButton(controller.toggleObscurePasswordField),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 15,
+            vertical: 5,
+          ),
+          border: const OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Colors.black38,
+            ),
+          ),
+          focusedBorder: const OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Colors.white,
+            ),
           ),
         ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: Colors.white,
-          ),
-        ),
+      ),
+    );
+  }
+
+  Widget buildToggleObscureButton(Function() toggleObscurePasswordField) {
+    return IconButton(
+      onPressed: toggleObscurePasswordField,
+      icon: Icon(
+        controller.isObscurePasswordField.value
+            ? Icons.visibility
+            : Icons.visibility_off,
+        color: Colors.white,
       ),
     );
   }

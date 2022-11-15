@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:music_app/screens/sign/sign_controller.dart';
-import 'package:music_app/screens/sign/sign_in/sign_in_controller.dart';
 import 'package:music_app/screens/sign/sign_in/sign_in_section.dart';
-import 'package:music_app/screens/sign/sign_up/sign_up_controller.dart';
 import 'package:music_app/screens/sign/sign_up/sign_up_section.dart';
 
 class SignScreen extends GetView<SignController> {
@@ -11,9 +9,6 @@ class SignScreen extends GetView<SignController> {
 
   @override
   Widget build(BuildContext context) {
-    Get.put(SignInController());
-    Get.put(SignUpController());
-
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(

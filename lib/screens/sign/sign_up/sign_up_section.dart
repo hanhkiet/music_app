@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:music_app/screens/sign/sign_controller.dart';
 import 'package:music_app/screens/sign/sign_up/sign_up_controller.dart';
+import 'package:music_app/services/firebase_auth.dart';
 
 class SignUpSection extends GetView<SignUpController> {
   const SignUpSection({
@@ -152,7 +154,22 @@ class SignUpSection extends GetView<SignUpController> {
     );
   }
 
-  _signUp(String email, String password) {}
+  _signUp(String email, String password) async {
+    try {
+      controller.updateErrorStatus(false);
+      await AuthService.createUserWithEmailAndPassword(
+          email: email, password: password);
+      Get.back();
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        controller.updateErrorStatus(true,
+            message: 'The password provided is too weak!');
+      } else if (e.code == 'email-already-in-use') {
+        controller.updateErrorStatus(true,
+            message: 'The account already exists for that email!');
+      }
+    }
+  }
 
   Widget buildEmailField() {
     return TextFormField(
@@ -190,41 +207,43 @@ class SignUpSection extends GetView<SignUpController> {
   }
 
   Widget buildPasswordField() {
-    return TextFormField(
-      controller: controller.passwordController,
-      autovalidateMode: AutovalidateMode.onUserInteraction,
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Please enter password!';
-        }
+    return Obx(
+      () => TextFormField(
+        controller: controller.passwordController,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Please enter password!';
+          }
 
-        if (value.length < 6) {
-          return 'Password length is at least 6 characters';
-        }
+          if (value.length < 6) {
+            return 'Password length is at least 6 characters!';
+          }
 
-        return null;
-      },
-      style: const TextStyle(fontSize: 20),
-      keyboardType: TextInputType.text,
-      cursorColor: Colors.white,
-      obscureText: true,
-      decoration: const InputDecoration(
-        suffixIcon: Icon(
-          Icons.visibility,
-          color: Colors.white,
-        ),
-        contentPadding: EdgeInsets.symmetric(
-          horizontal: 15,
-          vertical: 5,
-        ),
-        border: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: Colors.black38,
+          return null;
+        },
+        style: const TextStyle(fontSize: 20),
+        keyboardType: TextInputType.text,
+        cursorColor: Colors.white,
+        obscureText: controller.isObscurePasswordField.value,
+        decoration: InputDecoration(
+          suffixIcon: buildToggleObscureButton(
+            controller.toggleObscurePasswordField,
+            controller.isObscurePasswordField,
           ),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: Colors.white,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 15,
+            vertical: 5,
+          ),
+          border: const OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Colors.black38,
+            ),
+          ),
+          focusedBorder: const OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Colors.white,
+            ),
           ),
         ),
       ),
@@ -232,43 +251,51 @@ class SignUpSection extends GetView<SignUpController> {
   }
 
   Widget buildReenterPasswordField() {
-    return TextFormField(
-      controller: controller.passwordController,
-      autovalidateMode: AutovalidateMode.onUserInteraction,
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Please enter password!';
-        }
+    return Obx(
+      () => TextFormField(
+        controller: controller.reEnterPasswordController,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        validator: (value) {
+          if (value == null || value != controller.passwordText) {
+            return 'Password doesn\'t match';
+          }
 
-        if (value.length < 6) {
-          return 'Password length is at least 6 characters';
-        }
-
-        return null;
-      },
-      style: const TextStyle(fontSize: 20),
-      keyboardType: TextInputType.text,
-      cursorColor: Colors.white,
-      obscureText: true,
-      decoration: const InputDecoration(
-        suffixIcon: Icon(
-          Icons.visibility,
-          color: Colors.white,
-        ),
-        contentPadding: EdgeInsets.symmetric(
-          horizontal: 15,
-          vertical: 5,
-        ),
-        border: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: Colors.black38,
+          return null;
+        },
+        style: const TextStyle(fontSize: 20),
+        keyboardType: TextInputType.text,
+        cursorColor: Colors.white,
+        obscureText: controller.isObscureReEnterPasswordField.value,
+        decoration: InputDecoration(
+          suffixIcon: buildToggleObscureButton(
+            controller.toggleObscureReEnterPasswordField,
+            controller.isObscureReEnterPasswordField,
+          ),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 15,
+            vertical: 5,
+          ),
+          border: const OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Colors.black38,
+            ),
+          ),
+          focusedBorder: const OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Colors.white,
+            ),
           ),
         ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: Colors.white,
-          ),
-        ),
+      ),
+    );
+  }
+
+  Widget buildToggleObscureButton(Function() toggle, RxBool field) {
+    return IconButton(
+      onPressed: toggle,
+      icon: Icon(
+        field.value ? Icons.visibility : Icons.visibility_off,
+        color: Colors.white,
       ),
     );
   }
