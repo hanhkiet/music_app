@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthService {
-  static get instance => FirebaseAuth.instance;
+  static FirebaseAuth get instance => FirebaseAuth.instance;
 
   static User? get currentUser => instance.currentUser;
 
@@ -10,12 +10,20 @@ class AuthService {
   static Future<void> signInWithEmailAndPassword({
     required email,
     required password,
-  }) async {
-    await instance.signInWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-  }
+  }) async =>
+      await instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+  static Future<void> createUserWithEmailAndPassword({
+    required email,
+    required password,
+  }) async =>
+      await instance.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
   static Future<void> signOut() async {
     instance.signOut();

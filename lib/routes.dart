@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import 'package:music_app/screens/artist/artist_screen.dart';
 import 'package:music_app/screens/collection/collection_screen.dart';
-import 'package:music_app/screens/sign_in/sign_in_screen.dart';
+import 'package:music_app/screens/sign/sign_screen.dart';
 
 import 'screens/dashboard/dashboard.dart';
 import 'screens/dashboard/dashboard_binding.dart';
@@ -26,7 +26,7 @@ final routes = [
     page: () => const ArtistScreen(),
   ),
   GetPage(
-    name: '/signin',
-    page: () => const SignInScreen(),
+    name: '/sign',
+    page: () => const SignScreen(),
   ),
 ];

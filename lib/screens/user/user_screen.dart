@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:music_app/screens/sign/sign_controller.dart';
 import 'package:music_app/screens/user/user_controller.dart';
 import 'package:music_app/services/firebase_auth.dart';
 
@@ -8,6 +9,8 @@ class UserScreen extends GetView<UserController> {
 
   @override
   Widget build(BuildContext context) {
+    Get.put(SignController());
+
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -27,7 +30,7 @@ class UserScreen extends GetView<UserController> {
               if (!snapshot.hasData) {
                 return OutlinedButton(
                   onPressed: () async {
-                    await Get.toNamed('signin');
+                    await Get.toNamed('sign');
                   },
                   style: OutlinedButton.styleFrom(
                     side: const BorderSide(
