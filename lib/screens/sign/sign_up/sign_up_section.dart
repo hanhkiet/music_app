@@ -20,7 +20,7 @@ class SignUpSection extends GetView<SignUpController> {
       children: [
         Text(
           'Sign up',
-          style: Theme.of(context).textTheme.headline3!.copyWith(
+          style: Theme.of(context).textTheme.displaySmall!.copyWith(
                 fontWeight: FontWeight.bold,
               ),
         ),
@@ -30,7 +30,7 @@ class SignUpSection extends GetView<SignUpController> {
           children: [
             Text(
               'Already have an account?',
-              style: Theme.of(context).textTheme.bodyText1!.copyWith(
+              style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                     fontWeight: FontWeight.w400,
                   ),
             ),
@@ -149,7 +149,7 @@ class SignUpSection extends GetView<SignUpController> {
       ),
       child: Text(
         'Sign up',
-        style: Theme.of(context).textTheme.headline6,
+        style: Theme.of(context).textTheme.titleLarge,
       ),
     );
   }

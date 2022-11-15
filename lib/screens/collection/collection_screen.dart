@@ -82,7 +82,7 @@ class SongList extends StatelessWidget {
             ),
             subtitle: Text(
               'artists',
-              style: Theme.of(context).textTheme.bodyText2!.copyWith(
+              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                     fontWeight: FontWeight.normal,
                   ),
             ),

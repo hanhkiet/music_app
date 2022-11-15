@@ -159,7 +159,7 @@ class MusicDiscover extends StatelessWidget {
             'Enjoy your favorite music',
             style: Theme.of(context)
                 .textTheme
-                .headline5!
+                .headlineSmall!
                 .copyWith(fontWeight: FontWeight.bold),
           ),
           // TextFormField(

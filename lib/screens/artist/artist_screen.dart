@@ -122,7 +122,7 @@ class Header extends StatelessWidget {
             artist.name,
             style: Theme.of(context)
                 .textTheme
-                .headline4!
+                .headlineMedium!
                 .copyWith(fontWeight: FontWeight.w700),
           ),
           OutlinedButton(
@@ -135,7 +135,7 @@ class Header extends StatelessWidget {
             ),
             child: Text(
               'Follow',
-              style: Theme.of(context).textTheme.button!.copyWith(
+              style: Theme.of(context).textTheme.labelLarge!.copyWith(
                     fontSize: 18,
                   ),
             ),

@@ -41,7 +41,7 @@ class Title extends StatelessWidget {
         'Search',
         style: Theme.of(context)
             .textTheme
-            .headline4!
+            .headlineMedium!
             .copyWith(fontWeight: FontWeight.bold),
       ),
     );

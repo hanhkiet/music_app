@@ -29,7 +29,7 @@ class UserScreen extends GetView<UserController> {
                   ),
                   child: Text(
                     'Sign in',
-                    style: Theme.of(context).textTheme.button!.copyWith(
+                    style: Theme.of(context).textTheme.labelLarge!.copyWith(
                           fontSize: 18,
                         ),
                   ),
@@ -46,7 +46,7 @@ class UserScreen extends GetView<UserController> {
                 ),
                 child: Text(
                   'Sign out',
-                  style: Theme.of(context).textTheme.button!.copyWith(
+                  style: Theme.of(context).textTheme.labelLarge!.copyWith(
                         fontSize: 18,
                       ),
                 ),
