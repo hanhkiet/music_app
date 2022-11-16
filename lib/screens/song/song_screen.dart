@@ -145,7 +145,7 @@ class MusicPlayer extends StatelessWidget {
               PlayerButton(audioPlayer: audioPlayer),
               const PlaylistButton(),
             ],
-          )
+          ),
         ],
       ),
     );
