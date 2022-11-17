@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:music_app/global/player_controller.dart';
 import 'package:music_app/models/collection_model.dart';
 import 'package:music_app/models/song_model.dart';
 import 'package:music_app/screens/collection/collection_controller.dart';
@@ -22,40 +23,21 @@ class CollectionScreen extends GetView<CollectionController> {
           elevation: 0,
         ),
         backgroundColor: Colors.transparent,
-        body: SingleChildScrollView(
-          padding: const EdgeInsets.all(10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const CollectionInformation(),
-              const SizedBox(height: 10),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * .3,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(
-                        Icons.play_circle_fill_rounded,
-                        size: 35,
-                        color: Colors.white,
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(
-                        Icons.shuffle_rounded,
-                        size: 35,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 10),
-              const SongsList(),
-            ],
+        body: NotificationListener<OverscrollIndicatorNotification>(
+          onNotification: (overscroll) {
+            overscroll.disallowIndicator();
+            return false;
+          },
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: const [
+                CollectionInformation(),
+                SizedBox(height: 10),
+                SongsList(),
+              ],
+            ),
           ),
         ),
       ),
@@ -80,9 +62,60 @@ class SongsList extends StatelessWidget {
 
         final data = snapshot.data!.data.map((e) => json.encode(e)) as Iterable;
         final songs = Song.fromData(data);
-        return SongList(songs: songs);
+
+        return Column(
+          children: [
+            PlaylistPlayMode(songs: songs),
+            const SizedBox(height: 10),
+            SongList(songs: songs),
+          ],
+        );
       },
     );
+  }
+}
+
+class PlaylistPlayMode extends StatelessWidget {
+  const PlaylistPlayMode({
+    super.key,
+    required this.songs,
+  });
+
+  final List<Song> songs;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width * .3,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          IconButton(
+            onPressed: _playPlaylist,
+            icon: const Icon(
+              Icons.play_circle_fill_rounded,
+              size: 35,
+              color: Colors.white,
+            ),
+          ),
+          IconButton(
+            onPressed: _shufflePlaylist,
+            icon: const Icon(
+              Icons.shuffle_rounded,
+              size: 35,
+              color: Colors.white,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _shufflePlaylist() {}
+
+  void _playPlaylist() async {
+    final PlayerController controller = Get.find();
+    await controller.updatePlaylist(songs);
   }
 }
 

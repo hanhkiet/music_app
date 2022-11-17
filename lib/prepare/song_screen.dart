@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:music_app/global/player_controller.dart';
-import 'package:music_app/models/models.dart';
+import 'package:music_app/models/song_model.dart';
 import 'package:music_app/services/firebase_storage.dart';
+import 'package:music_app/widgets/player_button.dart';
 import 'package:music_app/widgets/seekbar.dart';
-import 'package:music_app/widgets/widgets.dart';
 import 'package:rxdart/rxdart.dart' as rxdart;
 
 class SongScreen extends GetView<PlayerController> {
@@ -14,30 +14,30 @@ class SongScreen extends GetView<PlayerController> {
 
   @override
   Widget build(BuildContext context) {
-    _updatePlayer();
-
     return Scaffold(
-      extendBodyBehindAppBar: true,
+      extendBody: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          Obx(() => BackgroundFilter(song: controller.currentSong.value)),
-          Obx(() => MusicPlayer(
-                song: controller.currentSong.value,
+      body: StreamBuilder(
+        stream: controller.audioPlayer.currentIndexStream,
+        builder: (context, snapshot) {
+          return Stack(
+            fit: StackFit.expand,
+            children: [
+              BackgroundFilter(
+                song: controller.getCurrentSong,
+              ),
+              MusicPlayer(
+                song: controller.getCurrentSong,
                 player: controller.audioPlayer,
-              )),
-        ],
+              ),
+            ],
+          );
+        },
       ),
     );
-  }
-
-  void _updatePlayer() {
-    final Song newSong = Get.arguments;
-    controller.updateSong(newSong);
   }
 }
 
@@ -233,6 +233,7 @@ class RepeatButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final PlayerController playerController = Get.find();
+
     return Obx(() {
       if (playerController.loopMode.value == LoopMode.all) {
         return IconButton(
