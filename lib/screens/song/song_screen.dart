@@ -2,15 +2,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:music_app/controllers/player_controller.dart';
+import 'package:music_app/global/player_controller.dart';
 import 'package:music_app/models/models.dart';
-import 'package:music_app/screens/song/song_controller.dart';
 import 'package:music_app/services/firebase_storage.dart';
 import 'package:music_app/widgets/seekbar.dart';
 import 'package:music_app/widgets/widgets.dart';
 import 'package:rxdart/rxdart.dart' as rxdart;
 
-class SongScreen extends GetView<SongController> {
+class SongScreen extends GetView<PlayerController> {
   const SongScreen({super.key});
 
   @override
@@ -25,9 +24,11 @@ class SongScreen extends GetView<SongController> {
       ),
       body: Stack(
         fit: StackFit.expand,
-        children: const [
-          BackgroundFilter(),
-          MusicPlayer(),
+        children: [
+          BackgroundFilter(song: controller.currentSong.value),
+          MusicPlayer(
+              song: controller.currentSong.value,
+              player: controller.audioPlayer),
         ],
       ),
     );
@@ -35,7 +36,6 @@ class SongScreen extends GetView<SongController> {
 
   void _updatePlayer() {
     final Song newSong = Get.arguments;
-    final PlayerController controller = Get.find();
     controller.updateSong(newSong);
   }
 }
@@ -43,13 +43,13 @@ class SongScreen extends GetView<SongController> {
 class BackgroundFilter extends StatelessWidget {
   const BackgroundFilter({
     Key? key,
+    required this.song,
   }) : super(key: key);
+
+  final Song song;
 
   @override
   Widget build(BuildContext context) {
-    final PlayerController playerController = Get.find();
-    final Song song = playerController.currentSong.value;
-
     return ShaderMask(
       shaderCallback: (rect) {
         return LinearGradient(
@@ -99,7 +99,12 @@ class BackgroundFilter extends StatelessWidget {
 class MusicPlayer extends StatelessWidget {
   const MusicPlayer({
     Key? key,
+    required this.song,
+    required this.player,
   }) : super(key: key);
+
+  final Song song;
+  final AudioPlayer player;
 
   Stream<SeekBarData> _getSeekBarDataStream(AudioPlayer audioPlayer) {
     return rxdart.Rx.combineLatest2<Duration, Duration?, SeekBarData>(
@@ -111,10 +116,6 @@ class MusicPlayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final PlayerController playerController = Get.find();
-    final AudioPlayer audioPlayer = playerController.audioPlayer;
-    final Song song = playerController.currentSong.value;
-
     return Padding(
       padding: const EdgeInsets.only(
         left: 20,
@@ -128,13 +129,13 @@ class MusicPlayer extends StatelessWidget {
           SongInformation(song: song),
           const SizedBox(height: 10),
           StreamBuilder<SeekBarData>(
-            stream: _getSeekBarDataStream(audioPlayer),
+            stream: _getSeekBarDataStream(player),
             builder: (context, snapshot) {
               final positionData = snapshot.data;
               return SeekBar(
                 duration: positionData?.duration ?? Duration.zero,
                 position: positionData?.position ?? Duration.zero,
-                onChangedEnd: audioPlayer.seek,
+                onChangedEnd: player.seek,
               );
             },
           ),
@@ -142,8 +143,8 @@ class MusicPlayer extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const RepeatButton(),
-              PlayerButton(audioPlayer: audioPlayer),
-              const PlaylistButton(),
+              PlayerButton(player: player),
+              const MoreFunctionButton(),
             ],
           ),
         ],
@@ -208,15 +209,15 @@ class SongInformation extends StatelessWidget {
   }
 }
 
-class PlaylistButton extends StatelessWidget {
-  const PlaylistButton({
+class MoreFunctionButton extends StatelessWidget {
+  const MoreFunctionButton({
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return const Icon(
-      Icons.playlist_play_rounded,
+      Icons.more_horiz,
       color: Colors.white,
       size: 35,
     );

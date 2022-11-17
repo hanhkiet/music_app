@@ -4,10 +4,10 @@ import 'package:just_audio/just_audio.dart';
 class PlayerButton extends StatelessWidget {
   const PlayerButton({
     Key? key,
-    required this.audioPlayer,
+    required this.player,
   }) : super(key: key);
 
-  final AudioPlayer audioPlayer;
+  final AudioPlayer player;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +29,7 @@ class PlayerButton extends StatelessWidget {
         //   },
         // ),
         StreamBuilder<PlayerState>(
-          stream: audioPlayer.playerStateStream,
+          stream: player.playerStateStream,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               final playerState = snapshot.data;
@@ -45,9 +45,9 @@ class PlayerButton extends StatelessWidget {
                     backgroundColor: Colors.white,
                   ),
                 );
-              } else if (!audioPlayer.playing) {
+              } else if (!player.playing) {
                 return IconButton(
-                  onPressed: audioPlayer.play,
+                  onPressed: player.play,
                   icon: const Icon(
                     Icons.play_circle_fill_rounded,
                     color: Colors.white,
@@ -56,7 +56,7 @@ class PlayerButton extends StatelessWidget {
                 );
               } else if (processingState != ProcessingState.completed) {
                 return IconButton(
-                  onPressed: audioPlayer.pause,
+                  onPressed: player.pause,
                   icon: const Icon(
                     Icons.pause_circle_filled_rounded,
                     color: Colors.white,
@@ -65,8 +65,8 @@ class PlayerButton extends StatelessWidget {
                 );
               } else {
                 return IconButton(
-                  onPressed: () => audioPlayer.seek(Duration.zero,
-                      index: audioPlayer.effectiveIndices!.first),
+                  onPressed: () => player.seek(Duration.zero,
+                      index: player.effectiveIndices!.first),
                   icon: const Icon(
                     Icons.replay_circle_filled_rounded,
                     color: Colors.white,

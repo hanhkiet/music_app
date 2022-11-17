@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:music_app/minimize_player/minimize_player.dart';
 import 'package:music_app/screens/dashboard/dashboard_controller.dart';
 import 'package:music_app/screens/home/home_screen.dart';
 import 'package:music_app/screens/search/search_screen.dart';
@@ -26,7 +27,7 @@ class DashBoard extends StatelessWidget {
                 const UserScreen(),
               ],
             ),
-            // const MinimizePlayer(height: 60),
+            const MinimizePlayer(height: 60),
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(

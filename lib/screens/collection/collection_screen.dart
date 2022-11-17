@@ -25,27 +25,63 @@ class CollectionScreen extends GetView<CollectionController> {
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(10),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const CollectionInformation(),
-              const SizedBox(height: 30),
-              FutureBuilder(
-                future: FunctionsService.callFunction(
-                    'getSongsFromCollection', {"id": Get.arguments.id}),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return Container();
-                  }
-
-                  final data = snapshot.data!.data.map((e) => json.encode(e))
-                      as Iterable;
-                  final songs = Song.fromData(data);
-                  return SongList(songs: songs);
-                },
+              const SizedBox(height: 10),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * .3,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton(
+                      onPressed: () {},
+                      icon: const Icon(
+                        Icons.play_circle_fill_rounded,
+                        size: 35,
+                        color: Colors.white,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {},
+                      icon: const Icon(
+                        Icons.shuffle_rounded,
+                        size: 35,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
               ),
+              const SizedBox(height: 10),
+              const SongsList(),
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+class SongsList extends StatelessWidget {
+  const SongsList({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: FunctionsService.callFunction(
+          'getSongsFromCollection', {"id": Get.arguments.id}),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Container();
+        }
+
+        final data = snapshot.data!.data.map((e) => json.encode(e)) as Iterable;
+        final songs = Song.fromData(data);
+        return SongList(songs: songs);
+      },
     );
   }
 }

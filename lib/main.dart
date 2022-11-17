@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:music_app/controllers/player_controller.dart';
+import 'package:music_app/global/player_controller.dart';
 import 'package:music_app/routes.dart';
 
 import 'firebase_options.dart';
