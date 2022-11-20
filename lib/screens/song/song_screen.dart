@@ -25,7 +25,7 @@ class SongScreen extends GetView<PlayerController> {
       body: StreamBuilder(
         stream: controller.audioPlayer.currentIndexStream.zipWith(
           controller.audioPlayer.sequenceStateStream,
-          (i, s) => {"index": i, "sequence": s},
+          (i, s) => {"sequence": s, "index": i},
         ),
         builder: (context, snapshot) {
           if (controller.getCurrentSong == null) {

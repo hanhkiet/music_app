@@ -8,7 +8,7 @@ import 'package:music_app/services/firebase_storage.dart';
 import 'package:music_app/themes.dart';
 import 'package:rxdart/rxdart.dart';
 
-class MinimizePlayer extends StatelessWidget {
+class MinimizePlayer extends GetView<PlayerController> {
   const MinimizePlayer({
     Key? key,
     required this.height,
@@ -18,53 +18,51 @@ class MinimizePlayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<PlayerController>(builder: (controller) {
-      return StreamBuilder(
-          stream: controller.audioPlayer.currentIndexStream.zipWith(
-            controller.audioPlayer.sequenceStateStream,
-            (i, s) => {"sequence": s, "index": i},
-          ),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData || controller.getCurrentSong == null) {
-              return Container();
-            }
+    return StreamBuilder(
+        stream: controller.audioPlayer.currentIndexStream.zipWith(
+          controller.audioPlayer.sequenceStateStream,
+          (i, s) => {"sequence": s, "index": i},
+        ),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData || controller.getCurrentSong == null) {
+            return Container();
+          }
 
-            final Song song = controller.getCurrentSong!;
+          final Song song = controller.getCurrentSong!;
 
-            return Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 5,
-                  horizontal: 10,
-                ),
-                child: InkWell(
-                  onTap: () => Get.toNamed('/song', arguments: [song]),
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: height,
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                      color: AppTheme.accent,
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          CoverImage(song: song),
-                          Text(song.name),
-                          const PlayButton(),
-                        ],
-                      ),
+          return Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 5,
+                horizontal: 10,
+              ),
+              child: InkWell(
+                onTap: () => Get.toNamed('/song', arguments: [song]),
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: height,
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                    color: AppTheme.accent,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        CoverImage(song: song),
+                        Text(song.name),
+                        const PlayButton(),
+                      ],
                     ),
                   ),
                 ),
               ),
-            );
-          });
-    });
+            ),
+          );
+        });
   }
 }
 

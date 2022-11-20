@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:music_app/global/player_controller.dart';
 import 'package:music_app/models/collection_model.dart';
 import 'package:music_app/models/song_model.dart';
 import 'package:music_app/screens/collection/collection_controller.dart';
@@ -110,9 +111,17 @@ class PlaylistPlayMode extends StatelessWidget {
     );
   }
 
-  void _shufflePlaylist() {}
+  void _shufflePlaylist() async {
+    final PlayerController controller = Get.find();
+    await controller.updateShuffleMode(needShuffle: true);
+
+    Get.toNamed('/song', arguments: songs);
+  }
 
   void _playPlaylist() async {
+    final PlayerController controller = Get.find();
+    await controller.updateShuffleMode();
+
     Get.toNamed('/song', arguments: songs);
   }
 }

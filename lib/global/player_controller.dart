@@ -23,12 +23,11 @@ class PlayerController extends GetxController {
     }
   }
 
-  updatePlaylist(List<Song> newSongs) async {
+  updatePlaylist(List<Song> newSongs, {bool shuffle = false}) async {
     _playlist.replace(newSongs);
     isPlaylistPlaying = true;
 
     _stopAudioPlayer();
-    AudioPlayer.clearAssetCache();
 
     final playlist = ConcatenatingAudioSource(
       useLazyPreparation: true,
@@ -44,8 +43,11 @@ class PlayerController extends GetxController {
       await playlist.add(audioSource);
     }
 
-    await audioPlayer.setAudioSource(playlist, initialIndex: 0);
+    await audioPlayer.setAudioSource(playlist, initialIndex: 0, preload: false);
+
     await audioPlayer.play();
+
+    update();
   }
 
   updatePosition(Duration newPosition) {
@@ -58,6 +60,9 @@ class PlayerController extends GetxController {
     await audioPlayer.setLoopMode(mode);
     update();
   }
+
+  updateShuffleMode({bool needShuffle = false}) async =>
+      audioPlayer.setShuffleModeEnabled(needShuffle);
 
   _stopAudioPlayer() => audioPlayer.playing ? audioPlayer.stop() : {};
 }
