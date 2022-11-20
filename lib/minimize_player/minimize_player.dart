@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:music_app/global/player_controller.dart';
-import 'package:music_app/minimize_player/minimize_player_controller.dart';
 import 'package:music_app/models/models.dart';
 import 'package:music_app/services/firebase_storage.dart';
 import 'package:music_app/themes.dart';
+import 'package:rxdart/rxdart.dart';
 
 class MinimizePlayer extends StatelessWidget {
   const MinimizePlayer({
@@ -18,45 +18,52 @@ class MinimizePlayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<MinimizePlayerController>(builder: (controller) {
-      return Obx(() {
-        final id = controller.currentSong.value.id;
-        final song = controller.currentSong.value;
+    return GetBuilder<PlayerController>(builder: (controller) {
+      return StreamBuilder(
+          stream: controller.audioPlayer.currentIndexStream.zipWith(
+            controller.audioPlayer.sequenceStateStream,
+            (i, s) => {"sequence": s, "index": i},
+          ),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData || controller.getCurrentSong == null) {
+              return Container();
+            }
 
-        if (id.isEmpty) return Container();
-        return Align(
-          alignment: Alignment.bottomCenter,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 5,
-              horizontal: 10,
-            ),
-            child: InkWell(
-              onTap: () => Get.toNamed('/song', arguments: song),
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                height: height,
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                  color: AppTheme.accent,
+            final Song song = controller.getCurrentSong!;
+
+            return Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 5,
+                  horizontal: 10,
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      CoverImage(song: song),
-                      Text(song.name),
-                      const PlayButton(),
-                    ],
+                child: InkWell(
+                  onTap: () => Get.toNamed('/song', arguments: [song]),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: height,
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      color: AppTheme.accent,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          CoverImage(song: song),
+                          Text(song.name),
+                          const PlayButton(),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ),
-          ),
-        );
-      });
+            );
+          });
     });
   }
 }

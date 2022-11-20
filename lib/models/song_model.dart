@@ -8,7 +8,7 @@ class Song {
   final String coverUrl;
   final String storageRef;
 
-  bool equal(Song s) => id == s.id;
+  bool equals(Song? s) => s != null && id == s.id;
 
   Song({
     required this.id,

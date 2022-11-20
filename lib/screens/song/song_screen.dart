@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:music_app/global/player_controller.dart';
-import 'package:music_app/models/models.dart';
+import 'package:music_app/models/song_model.dart';
 import 'package:music_app/services/firebase_storage.dart';
+import 'package:music_app/widgets/player_button.dart';
 import 'package:music_app/widgets/seekbar.dart';
-import 'package:music_app/widgets/widgets.dart';
 import 'package:rxdart/rxdart.dart' as rxdart;
 
 class SongScreen extends GetView<PlayerController> {
@@ -14,7 +14,7 @@ class SongScreen extends GetView<PlayerController> {
 
   @override
   Widget build(BuildContext context) {
-    _updatePlayer();
+    _updatePlaylist();
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -22,22 +22,54 @@ class SongScreen extends GetView<PlayerController> {
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          Obx(() => BackgroundFilter(song: controller.currentSong.value)),
-          Obx(() => MusicPlayer(
-                song: controller.currentSong.value,
-                player: controller.audioPlayer,
-              )),
-        ],
+      body: StreamBuilder(
+        stream: controller.audioPlayer.currentIndexStream.zipWith(
+          controller.audioPlayer.sequenceStateStream,
+          (i, s) => {"index": i, "sequence": s},
+        ),
+        builder: (context, snapshot) {
+          if (controller.getCurrentSong == null) {
+            return const Center(
+              child: Text('Null'),
+            );
+          }
+
+          PageController pageController = PageController();
+
+          return Stack(
+            fit: StackFit.expand,
+            children: [
+              BackgroundFilter(
+                song: controller.getCurrentSong!,
+              ),
+              PageView(
+                scrollDirection: Axis.vertical,
+                controller: pageController,
+                children: [
+                  MusicPlayer(
+                    song: controller.getCurrentSong!,
+                    player: controller.audioPlayer,
+                    pageController: pageController,
+                  ),
+                  const Center(
+                    child: Text('cc'),
+                  ),
+                ],
+              ),
+            ],
+          );
+        },
       ),
     );
   }
 
-  void _updatePlayer() {
-    final Song newSong = Get.arguments;
-    controller.updateSong(newSong);
+  _updatePlaylist() async {
+    final List<Song> songs = Get.arguments;
+    if (songs.length > 1) {
+      await controller.updatePlaylist(songs);
+    } else if (songs.length == 1) {
+      await controller.updateSong(songs[0]);
+    }
   }
 }
 
@@ -102,10 +134,12 @@ class MusicPlayer extends StatelessWidget {
     Key? key,
     required this.song,
     required this.player,
+    required this.pageController,
   }) : super(key: key);
 
   final Song song;
   final AudioPlayer player;
+  final PageController pageController;
 
   Stream<SeekBarData> _getSeekBarDataStream(AudioPlayer audioPlayer) {
     return rxdart.Rx.combineLatest2<Duration, Duration?, SeekBarData>(
@@ -145,7 +179,9 @@ class MusicPlayer extends StatelessWidget {
             children: [
               const RepeatButton(),
               PlayerButton(player: player),
-              const MoreFunctionButton(),
+              MoreFunctionButton(
+                pageController: pageController,
+              ),
             ],
           ),
         ],
@@ -213,14 +249,22 @@ class SongInformation extends StatelessWidget {
 class MoreFunctionButton extends StatelessWidget {
   const MoreFunctionButton({
     Key? key,
+    required this.pageController,
   }) : super(key: key);
+
+  final PageController pageController;
 
   @override
   Widget build(BuildContext context) {
-    return const Icon(
-      Icons.more_horiz,
+    return IconButton(
+      onPressed: () => pageController.animateToPage(
+        1,
+        duration: const Duration(milliseconds: 100),
+        curve: Curves.bounceInOut,
+      ),
+      icon: const Icon(Icons.more_horiz),
       color: Colors.white,
-      size: 35,
+      iconSize: 35,
     );
   }
 }
@@ -233,6 +277,7 @@ class RepeatButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final PlayerController playerController = Get.find();
+
     return Obx(() {
       if (playerController.loopMode.value == LoopMode.all) {
         return IconButton(

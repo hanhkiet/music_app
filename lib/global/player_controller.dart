@@ -7,21 +7,19 @@ class PlayerController extends GetxController {
   final Playlist _playlist = Playlist();
   bool isPlaylistPlaying = false;
 
-  final currentSong = Song.empty().obs;
-
   final duration = Duration.zero.obs;
   final position = Duration.zero.obs;
-  final loopMode = LoopMode.one.obs;
+  final loopMode = LoopMode.off.obs;
 
   final AudioPlayer audioPlayer = AudioPlayer();
 
-  Song get getCurrentSong => _playlist.getSong(audioPlayer.currentIndex!);
+  Song? get getCurrentSong => audioPlayer.currentIndex != null
+      ? _playlist.getSong(audioPlayer.currentIndex!)
+      : null;
 
-  updateSong(Song newSong) {
-    if (!newSong.equal(getCurrentSong)) {
-      currentSong(newSong);
-      position(Duration.zero);
-      _updatePlayer();
+  updateSong(Song newSong) async {
+    if (!newSong.equals(getCurrentSong)) {
+      await updatePlaylist([newSong]);
     }
   }
 
@@ -46,8 +44,8 @@ class PlayerController extends GetxController {
       await playlist.add(audioSource);
     }
 
-    await audioPlayer.setAudioSource(playlist, initialIndex: 0, preload: false);
-    audioPlayer.play();
+    await audioPlayer.setAudioSource(playlist, initialIndex: 0);
+    await audioPlayer.play();
   }
 
   updatePosition(Duration newPosition) {
@@ -61,25 +59,13 @@ class PlayerController extends GetxController {
     update();
   }
 
-  _updatePlayer() async {
-    _stopAudioPlayer();
-
-    String url = await StorageService.getDownloadUrl(
-        'songs/${currentSong.value.storageRef}');
-
-    final audioSource = LockCachingAudioSource(Uri.parse(url));
-
-    await audioPlayer.setAudioSource(audioSource, preload: false);
-    audioPlayer.play();
-  }
-
   _stopAudioPlayer() => audioPlayer.playing ? audioPlayer.stop() : {};
 }
 
 class Playlist {
   List<Song> songs = [];
 
-  Song getSong(int index) => songs[index];
+  Song? getSong(int index) => index < songs.length ? songs[index] : null;
 
   void add(Song newSong) => songs.add(newSong);
 

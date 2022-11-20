@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:music_app/minimize_player/minimize_player_controller.dart';
 import 'package:music_app/models/song_model.dart';
 import 'package:music_app/services/firebase_storage.dart';
 
@@ -17,8 +16,7 @@ class SongCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () async {
-        await Get.toNamed('/song', arguments: song);
-        _updateMinimizePlayer();
+        await Get.toNamed('/song', arguments: [song]);
       },
       child: Container(
         margin: const EdgeInsets.only(right: 5),
@@ -33,11 +31,6 @@ class SongCard extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  _updateMinimizePlayer() {
-    final MinimizePlayerController controller = Get.find();
-    controller.updateSong(song);
   }
 }
 

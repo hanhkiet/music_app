@@ -14,20 +14,20 @@ class PlayerButton extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        // StreamBuilder<SequenceState?>(
-        //   stream: audioPlayer.sequenceStateStream,
-        //   builder: (context, index) {
-        //     return IconButton(
-        //       onPressed:
-        //           audioPlayer.hasPrevious ? audioPlayer.seekToPrevious : null,
-        //       icon: const Icon(
-        //         Icons.skip_previous,
-        //         color: Colors.white,
-        //       ),
-        //       iconSize: 45,
-        //     );
-        //   },
-        // ),
+        StreamBuilder<SequenceState?>(
+          stream: player.sequenceStateStream,
+          builder: (context, index) {
+            return IconButton(
+              onPressed: player.hasPrevious ? player.seekToPrevious : null,
+              icon: const Icon(
+                Icons.skip_previous,
+              ),
+              iconSize: 40,
+              color: Colors.white,
+              disabledColor: Colors.white24,
+            );
+          },
+        ),
         StreamBuilder<PlayerState>(
           stream: player.playerStateStream,
           builder: (context, snapshot) {
@@ -38,11 +38,11 @@ class PlayerButton extends StatelessWidget {
               if (processingState == ProcessingState.loading ||
                   processingState == ProcessingState.buffering) {
                 return Container(
-                  width: 64,
-                  height: 64,
+                  width: 30,
+                  height: 30,
                   margin: const EdgeInsets.all(10),
                   child: const CircularProgressIndicator(
-                    backgroundColor: Colors.white,
+                    color: Colors.white,
                   ),
                 );
               } else if (!player.playing) {
@@ -75,25 +75,31 @@ class PlayerButton extends StatelessWidget {
                 );
               }
             } else {
-              return const CircularProgressIndicator(
-                backgroundColor: Colors.white,
+              return Container(
+                width: 30,
+                height: 30,
+                margin: const EdgeInsets.all(10),
+                child: const CircularProgressIndicator(
+                  color: Colors.white,
+                ),
               );
             }
           },
         ),
-        // StreamBuilder<SequenceState?>(
-        //   stream: audioPlayer.sequenceStateStream,
-        //   builder: (context, index) {
-        //     return IconButton(
-        //       onPressed: audioPlayer.hasNext ? audioPlayer.seekToNext : null,
-        //       icon: const Icon(
-        //         Icons.skip_next,
-        //         color: Colors.white,
-        //       ),
-        //       iconSize: 45,
-        //     );
-        //   },
-        // ),
+        StreamBuilder<SequenceState?>(
+          stream: player.sequenceStateStream,
+          builder: (context, index) {
+            return IconButton(
+              onPressed: player.hasNext ? player.seekToNext : null,
+              icon: const Icon(
+                Icons.skip_next,
+              ),
+              iconSize: 40,
+              color: Colors.white,
+              disabledColor: Colors.white24,
+            );
+          },
+        ),
       ],
     );
   }

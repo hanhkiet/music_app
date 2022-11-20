@@ -19,4 +19,7 @@ class AppTheme {
       accent.withOpacity(0.8),
     ],
   );
+
+  static const Icon playingIcon = Icon(Icons.play_arrow_rounded);
+  static const Icon pauseIcon = Icon(Icons.pause_rounded);
 }

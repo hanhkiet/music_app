@@ -3,10 +3,10 @@ import 'package:music_app/screens/artist/artist_screen.dart';
 import 'package:music_app/screens/collection/collection_screen.dart';
 import 'package:music_app/screens/sign/sign_binding.dart';
 import 'package:music_app/screens/sign/sign_screen.dart';
+import 'package:music_app/screens/song/song_screen.dart';
 
 import 'screens/dashboard/dashboard.dart';
 import 'screens/dashboard/dashboard_binding.dart';
-import 'screens/song/song_screen.dart';
 
 final routes = [
   GetPage(
