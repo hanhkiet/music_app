@@ -5,11 +5,11 @@ import 'package:music_app/services/firebase_storage.dart';
 
 class PlayerController extends GetxController {
   final Playlist _playlist = Playlist();
-  bool isPlaylistPlaying = false;
 
   final duration = Duration.zero.obs;
   final position = Duration.zero.obs;
   final loopMode = LoopMode.off.obs;
+  final shuffleMode = false.obs;
 
   final AudioPlayer audioPlayer = AudioPlayer();
 
@@ -23,9 +23,10 @@ class PlayerController extends GetxController {
     }
   }
 
+  int get playlistLength => _playlist.length;
+
   updatePlaylist(List<Song> newSongs, {bool shuffle = false}) async {
     _playlist.replace(newSongs);
-    isPlaylistPlaying = true;
 
     _stopAudioPlayer();
 
@@ -61,14 +62,18 @@ class PlayerController extends GetxController {
     update();
   }
 
-  updateShuffleMode({bool needShuffle = false}) async =>
-      audioPlayer.setShuffleModeEnabled(needShuffle);
+  updateShuffleMode({bool needShuffle = false}) async {
+    audioPlayer.setShuffleModeEnabled(needShuffle);
+    shuffleMode(needShuffle);
+  }
 
   _stopAudioPlayer() => audioPlayer.playing ? audioPlayer.stop() : {};
 }
 
 class Playlist {
   List<Song> songs = [];
+
+  int get length => songs.length;
 
   Song? getSong(int index) => index < songs.length ? songs[index] : null;
 

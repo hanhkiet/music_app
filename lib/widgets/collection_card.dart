@@ -21,10 +21,10 @@ class CollectionCard extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.only(right: 20),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             CoverImage(collection: collection),
-            const SizedBox(height: 5),
+            const SizedBox(height: 10),
             TitleBanner(collection: collection),
           ],
         ),
@@ -50,16 +50,7 @@ class TitleBanner extends StatelessWidget {
           collection.name,
           style: Theme.of(context).textTheme.titleMedium!.copyWith(
                 color: Colors.white,
-                fontWeight: FontWeight.w400,
-              ),
-          overflow: TextOverflow.ellipsis,
-          maxLines: 1,
-        ),
-        Text(
-          'artists',
-          style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.w400,
+                fontWeight: FontWeight.w500,
               ),
           overflow: TextOverflow.ellipsis,
           maxLines: 1,

@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:music_app/models/artist_model.dart';
 import 'package:music_app/models/song_model.dart';
 import 'package:music_app/services/firebase_storage.dart';
 
@@ -25,7 +26,7 @@ class SongCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CoverImage(song: song),
-            const SizedBox(height: 5),
+            const SizedBox(height: 10),
             TitleBanner(song: song),
           ],
         ),
@@ -51,13 +52,13 @@ class TitleBanner extends StatelessWidget {
           song.name,
           style: Theme.of(context).textTheme.titleMedium!.copyWith(
                 color: Colors.white,
-                fontWeight: FontWeight.w400,
+                fontWeight: FontWeight.w500,
               ),
           overflow: TextOverflow.ellipsis,
           maxLines: 1,
         ),
         Text(
-          'artists',
+          _convertToNameList(song.artists).join(', '),
           style: Theme.of(context).textTheme.titleSmall!.copyWith(
                 color: Colors.white,
                 fontWeight: FontWeight.w400,
@@ -68,6 +69,8 @@ class TitleBanner extends StatelessWidget {
       ],
     );
   }
+
+  _convertToNameList(List<Artist> artists) => artists.map((e) => e.name);
 }
 
 class CoverImage extends StatelessWidget {

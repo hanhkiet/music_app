@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:music_app/global/player_controller.dart';
 
-class PlayerButton extends StatelessWidget {
+class PlayerButton extends GetView<PlayerController> {
   const PlayerButton({
     Key? key,
-    required this.player,
   }) : super(key: key);
-
-  final AudioPlayer player;
 
   @override
   Widget build(BuildContext context) {
+    final AudioPlayer player = controller.audioPlayer;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -18,7 +18,9 @@ class PlayerButton extends StatelessWidget {
           stream: player.sequenceStateStream,
           builder: (context, index) {
             return IconButton(
-              onPressed: player.hasPrevious ? player.seekToPrevious : null,
+              onPressed: player.hasPrevious && controller.playlistLength > 1
+                  ? player.seekToPrevious
+                  : null,
               icon: const Icon(
                 Icons.skip_previous,
               ),
@@ -90,7 +92,9 @@ class PlayerButton extends StatelessWidget {
           stream: player.sequenceStateStream,
           builder: (context, index) {
             return IconButton(
-              onPressed: player.hasNext ? player.seekToNext : null,
+              onPressed: player.hasNext && controller.playlistLength > 1
+                  ? player.seekToNext
+                  : null,
               icon: const Icon(
                 Icons.skip_next,
               ),

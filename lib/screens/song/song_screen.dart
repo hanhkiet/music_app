@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:music_app/global/player_controller.dart';
+import 'package:music_app/models/artist_model.dart';
 import 'package:music_app/models/song_model.dart';
 import 'package:music_app/services/firebase_storage.dart';
+import 'package:music_app/widgets/artist_listview.dart';
 import 'package:music_app/widgets/player_button.dart';
 import 'package:music_app/widgets/seekbar.dart';
 import 'package:rxdart/rxdart.dart' as rxdart;
@@ -36,6 +38,8 @@ class SongScreen extends GetView<PlayerController> {
 
           PageController pageController = PageController();
 
+          final Song currentSong = controller.getCurrentSong!;
+
           return Stack(
             fit: StackFit.expand,
             children: [
@@ -47,13 +51,11 @@ class SongScreen extends GetView<PlayerController> {
                 controller: pageController,
                 children: [
                   MusicPlayer(
-                    song: controller.getCurrentSong!,
+                    song: currentSong,
                     player: controller.audioPlayer,
                     pageController: pageController,
                   ),
-                  const Center(
-                    child: Text('cc'),
-                  ),
+                  ScreenInformation(song: currentSong),
                 ],
               ),
             ],
@@ -70,6 +72,141 @@ class SongScreen extends GetView<PlayerController> {
     } else if (songs.length == 1) {
       await controller.updateSong(songs[0]);
     }
+  }
+}
+
+class ScreenInformation extends StatelessWidget {
+  const ScreenInformation({
+    Key? key,
+    required this.song,
+  }) : super(key: key);
+
+  final Song song;
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const ActionRow(),
+          const SizedBox(height: 20),
+          ArtistList(artists: song.artists),
+          const CurrentPlaylist(),
+        ],
+      ),
+    );
+  }
+}
+
+class CurrentPlaylist extends StatelessWidget {
+  const CurrentPlaylist({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Text(
+            'Playlist',
+            style: Theme.of(context).textTheme.headline5!.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class ArtistList extends StatelessWidget {
+  const ArtistList({
+    Key? key,
+    required this.artists,
+  }) : super(key: key);
+
+  final List<Artist> artists;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Text(
+            'Artists',
+            style: Theme.of(context).textTheme.headline5!.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+          ),
+        ),
+        ArtistListView(artists: artists),
+      ],
+    );
+  }
+}
+
+class ActionRow extends StatelessWidget {
+  const ActionRow({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        ActionButton(
+          title: 'Favorite',
+          icon: const Icon(Icons.favorite_border_rounded),
+          action: () {},
+        ),
+        ActionButton(
+          title: 'Add to playlist',
+          icon: const Icon(Icons.playlist_add_rounded),
+          action: () {},
+        ),
+        ActionButton(
+          title: 'Download',
+          icon: const Icon(Icons.download_rounded),
+          action: () {},
+        ),
+      ],
+    );
+  }
+}
+
+class ActionButton extends StatelessWidget {
+  const ActionButton({
+    Key? key,
+    required this.title,
+    required this.icon,
+    required this.action,
+  }) : super(key: key);
+
+  final String title;
+  final Icon icon;
+  final Function() action;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        IconButton(
+          onPressed: action,
+          icon: icon,
+          iconSize: 35,
+          color: Colors.white,
+        ),
+        Text(
+          title,
+        ),
+      ],
+    );
   }
 }
 
@@ -178,7 +315,7 @@ class MusicPlayer extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const RepeatButton(),
-              PlayerButton(player: player),
+              const PlayerButton(),
               MoreFunctionButton(
                 pageController: pageController,
               ),
@@ -278,11 +415,45 @@ class RepeatButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final PlayerController playerController = Get.find();
 
+    if (playerController.playlistLength == 1) {
+      return Obx(() {
+        if (playerController.loopMode.value == LoopMode.one) {
+          return IconButton(
+            onPressed: () => playerController.updateMode(LoopMode.off),
+            icon: const Icon(
+              Icons.repeat_one_rounded,
+              color: Colors.white,
+            ),
+            iconSize: 35,
+          );
+        } else {
+          return IconButton(
+            onPressed: () => playerController.updateMode(LoopMode.one),
+            icon: Icon(
+              Icons.repeat_rounded,
+              color: Colors.white.withOpacity(0.2),
+            ),
+            iconSize: 35,
+          );
+        }
+      });
+    }
+
     return Obx(() {
-      if (playerController.loopMode.value == LoopMode.all) {
+      if (playerController.loopMode.value == LoopMode.one) {
+        return IconButton(
+          onPressed: () => playerController.updateMode(LoopMode.all),
+          icon: const Icon(
+            Icons.repeat_one_rounded,
+            color: Colors.white,
+          ),
+          iconSize: 35,
+        );
+      } else if (playerController.loopMode.value == LoopMode.all) {
         return IconButton(
           onPressed: () {
-            playerController.updateMode(LoopMode.one);
+            playerController.updateMode(LoopMode.off);
+            playerController.updateShuffleMode(needShuffle: true);
           },
           icon: const Icon(
             Icons.repeat_rounded,
@@ -290,21 +461,22 @@ class RepeatButton extends StatelessWidget {
           ),
           iconSize: 35,
         );
-      } else if (playerController.loopMode.value == LoopMode.one) {
+      } else if (playerController.shuffleMode.value) {
         return IconButton(
-          onPressed: () => playerController.updateMode(LoopMode.off),
+          onPressed: () => playerController.updateMode(LoopMode.one),
           icon: const Icon(
-            Icons.repeat_one_rounded,
+            Icons.shuffle_rounded,
             color: Colors.white,
           ),
           iconSize: 35,
         );
       } else {
         return IconButton(
-          onPressed: () => playerController.updateMode(LoopMode.all),
+          onPressed: () =>
+              playerController.updateShuffleMode(needShuffle: true),
           icon: Icon(
-            Icons.repeat_rounded,
-            color: Colors.white.withOpacity(0.2),
+            Icons.shuffle_rounded,
+            color: Colors.white.withOpacity(.2),
           ),
           iconSize: 35,
         );

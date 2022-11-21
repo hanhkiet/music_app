@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:music_app/models/models.dart';
+
 class Song {
   final String id;
   final String name;
@@ -7,6 +9,7 @@ class Song {
   final int playCount;
   final String coverUrl;
   final String storageRef;
+  final List<Artist> artists;
 
   bool equals(Song? s) => s != null && id == s.id;
 
@@ -17,9 +20,12 @@ class Song {
     required this.playCount,
     required this.coverUrl,
     required this.storageRef,
+    required this.artists,
   });
 
   factory Song.fromJson(Map<String, dynamic> json) {
+    final artistsData = json['artists'].map((e) => jsonEncode(e));
+
     return Song(
       id: json['id'],
       name: json['name'],
@@ -27,6 +33,7 @@ class Song {
       playCount: json['play_count'],
       coverUrl: json['cover_url'],
       storageRef: json['storage_ref'],
+      artists: Artist.fromData(artistsData),
     );
   }
 
@@ -38,6 +45,7 @@ class Song {
       playCount: 0,
       coverUrl: '',
       storageRef: '',
+      artists: [],
     );
   }
 

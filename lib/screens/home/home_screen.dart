@@ -5,6 +5,7 @@ import 'package:get/state_manager.dart';
 import 'package:music_app/models/models.dart';
 import 'package:music_app/screens/home/home_controller.dart';
 import 'package:music_app/services/firebase_functions.dart';
+import 'package:music_app/widgets/artist_listview.dart';
 import 'package:music_app/widgets/background.dart';
 import 'package:music_app/widgets/widgets.dart';
 
@@ -101,6 +102,7 @@ class TopArtistsSection extends StatelessWidget {
 
         final data = snapshot.data!.data.map((e) => json.encode(e));
         final artists = Artist.fromData(data);
+
         return Padding(
           padding: const EdgeInsets.only(
             left: 20,
@@ -112,24 +114,7 @@ class TopArtistsSection extends StatelessWidget {
                 padding: EdgeInsets.only(left: 10),
                 child: SectionHeader(title: 'Top artists'),
               ),
-              SizedBox(
-                height: MediaQuery.of(context).size.width * .5,
-                child: NotificationListener<OverscrollIndicatorNotification>(
-                  onNotification: (overscroll) {
-                    overscroll.disallowIndicator();
-                    return false;
-                  },
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.all(10),
-                    itemCount: artists.length,
-                    itemBuilder: (context, index) {
-                      return ArtistAvatar(artist: artists[index]);
-                    },
-                  ),
-                ),
-              )
+              ArtistListView(artists: artists)
             ],
           ),
         );

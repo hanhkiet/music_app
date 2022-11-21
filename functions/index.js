@@ -19,7 +19,18 @@ exports.getSong = functions.https.onCall(async (data, context) => {
     const snap = await firestore.collection('songs').doc(id).get();
     const snapData = snap.data();
 
-    return { id, ...snapData };
+    const artistRefs = snapData.artists;
+
+    const artistsResult = await Promise.all(artistRefs.map(async function (ref) {
+        const snap = await firestore.collection('artists').doc(ref).get();
+
+        const snapId = snap.id;
+        const snapData = snap.data();
+
+        return { id: snapId, ...snapData };
+    }));
+
+    return { id, ...snapData, artists: artistsResult };
 });
 
 exports.getArtist = functions.https.onCall(async (data, context) => {
@@ -35,12 +46,22 @@ exports.getArtist = functions.https.onCall(async (data, context) => {
 exports.getTrendingSongs = functions.https.onCall(async (data, context) => {
     const snap = await firestore.collection('songs').orderBy('play_count', 'desc').limit(5).get();
 
-    const result = snap.docs.map(function (doc) {
+    const result = await Promise.all(snap.docs.map(async function (doc) {
         const id = doc.id;
         const data = doc.data();
+        const artistRefs = data.artists;
 
-        return { id, ...data };
-    });
+        const artistsResult = await Promise.all(artistRefs.map(async function (ref) {
+            const artistSnap = await firestore.collection('artists').doc(ref).get();
+
+            const artistId = artistSnap.id;
+            const artistData = artistSnap.data();
+
+            return { id: artistId, ...artistData };
+        }));
+
+        return { id, ...data, artists: artistsResult };
+    }));
 
     return result;
 });
@@ -51,6 +72,7 @@ exports.getTopArtists = functions.https.onCall(async (data, context) => {
     const result = snap.docs.map(function (doc) {
         const id = doc.id;
         const data = doc.data();
+
 
         return { id, ...data };
     });
@@ -139,7 +161,18 @@ exports.getSongsFromCollection = functions.https.onCall(async (data, context) =>
         const snapId = snap.id;
         const snapData = snap.data();
 
-        return { id: snapId, ...snapData };
+        const artistRefs = snapData.artists;
+
+        const artistsResult = await Promise.all(artistRefs.map(async function (ref) {
+            const artistSnap = await firestore.collection('artists').doc(ref).get();
+
+            const artistId = artistSnap.id;
+            const artistData = artistSnap.data();
+
+            return { id: artistId, ...artistData };
+        }));
+
+        return { id: snapId, ...snapData, artists: artistsResult };
     }));
 
     return result;
