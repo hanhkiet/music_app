@@ -9,7 +9,7 @@ class PlayerController extends GetxController {
   final duration = Duration.zero.obs;
   final position = Duration.zero.obs;
   final loopMode = LoopMode.off.obs;
-  final shuffleMode = false.obs;
+  final isShuffled = false.obs;
 
   final AudioPlayer audioPlayer = AudioPlayer();
 
@@ -22,6 +22,8 @@ class PlayerController extends GetxController {
       await updatePlaylist([newSong]);
     }
   }
+
+  updateShuffleMode(bool mode) => isShuffled(mode);
 
   int get playlistLength => _playlist.length;
   List<Song> get playlist => _playlist.getSongs;
@@ -61,11 +63,6 @@ class PlayerController extends GetxController {
     loopMode(mode);
     await audioPlayer.setLoopMode(mode);
     update();
-  }
-
-  updateShuffleMode({bool needShuffle = false}) async {
-    audioPlayer.setShuffleModeEnabled(needShuffle);
-    shuffleMode(needShuffle);
   }
 
   _stopAudioPlayer() => audioPlayer.playing ? audioPlayer.stop() : {};

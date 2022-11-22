@@ -1,11 +1,15 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:marquee/marquee.dart';
 import 'package:music_app/global/player_controller.dart';
 import 'package:music_app/models/models.dart';
 import 'package:music_app/services/firebase_storage.dart';
 import 'package:music_app/themes.dart';
+import 'package:music_app/utils/convert.dart';
+import 'package:music_app/widgets/widgets.dart';
 import 'package:rxdart/rxdart.dart';
 
 class MinimizePlayer extends GetView<PlayerController> {
@@ -53,8 +57,14 @@ class MinimizePlayer extends GetView<PlayerController> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         CoverImage(song: song),
-                        Text(song.name),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 10),
+                            child: SongTitle(song: song),
+                          ),
+                        ),
                         const PlayButton(),
+                        const ModeButton(),
                       ],
                     ),
                   ),
@@ -63,6 +73,76 @@ class MinimizePlayer extends GetView<PlayerController> {
             ),
           );
         });
+  }
+}
+
+class SongTitle extends StatelessWidget {
+  const SongTitle({
+    Key? key,
+    required this.song,
+  }) : super(key: key);
+
+  final Song song;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        AutoSizeText(
+          song.name,
+          maxLines: 1,
+          style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+          overflowReplacement: SizedBox(
+            height: 20,
+            child: Marquee(
+              text: song.name,
+              style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+              scrollAxis: Axis.horizontal,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              blankSpace: 40.0,
+              velocity: 20.0,
+              pauseAfterRound: const Duration(seconds: 1),
+              accelerationDuration: const Duration(seconds: 1),
+              accelerationCurve: Curves.linear,
+              decelerationDuration: const Duration(milliseconds: 500),
+              decelerationCurve: Curves.linear,
+            ),
+          ),
+        ),
+        const SizedBox(height: 5),
+        AutoSizeText(
+          convertToNameList(song.artists).join(', '),
+          maxLines: 1,
+          style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                fontWeight: FontWeight.w400,
+              ),
+          overflowReplacement: SizedBox(
+            height: 20,
+            child: Marquee(
+              text: convertToNameList(song.artists).join(', '),
+              style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                    fontWeight: FontWeight.w400,
+                  ),
+              scrollAxis: Axis.horizontal,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              blankSpace: 40.0,
+              velocity: 20.0,
+              pauseAfterRound: const Duration(seconds: 1),
+              accelerationDuration: const Duration(seconds: 1),
+              accelerationCurve: Curves.linear,
+              decelerationDuration: const Duration(milliseconds: 500),
+              decelerationCurve: Curves.linear,
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }
 

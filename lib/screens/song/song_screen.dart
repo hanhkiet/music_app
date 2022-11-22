@@ -8,9 +8,7 @@ import 'package:music_app/models/song_model.dart';
 import 'package:music_app/services/firebase_firestore.dart';
 import 'package:music_app/services/firebase_storage.dart';
 import 'package:music_app/utils/convert.dart';
-import 'package:music_app/widgets/artist_listview.dart';
-import 'package:music_app/widgets/player_button.dart';
-import 'package:music_app/widgets/seekbar.dart';
+import 'package:music_app/widgets/widgets.dart';
 import 'package:rxdart/rxdart.dart' as rxdart;
 
 class SongScreen extends GetView<PlayerController> {
@@ -446,7 +444,7 @@ class MusicPlayer extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const RepeatButton(),
+              const ModeButton(),
               const PlayerButton(),
               MoreFunctionButton(
                 pageController: pageController,
@@ -535,84 +533,5 @@ class MoreFunctionButton extends StatelessWidget {
       color: Colors.white,
       iconSize: 35,
     );
-  }
-}
-
-class RepeatButton extends StatelessWidget {
-  const RepeatButton({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final PlayerController playerController = Get.find();
-
-    if (playerController.playlistLength == 1) {
-      return Obx(() {
-        if (playerController.loopMode.value == LoopMode.one) {
-          return IconButton(
-            onPressed: () => playerController.updateMode(LoopMode.off),
-            icon: const Icon(
-              Icons.repeat_one_rounded,
-              color: Colors.white,
-            ),
-            iconSize: 35,
-          );
-        } else {
-          return IconButton(
-            onPressed: () => playerController.updateMode(LoopMode.one),
-            icon: Icon(
-              Icons.repeat_rounded,
-              color: Colors.white.withOpacity(0.2),
-            ),
-            iconSize: 35,
-          );
-        }
-      });
-    }
-
-    return Obx(() {
-      if (playerController.loopMode.value == LoopMode.one) {
-        return IconButton(
-          onPressed: () => playerController.updateMode(LoopMode.all),
-          icon: const Icon(
-            Icons.repeat_one_rounded,
-            color: Colors.white,
-          ),
-          iconSize: 35,
-        );
-      } else if (playerController.loopMode.value == LoopMode.all) {
-        return IconButton(
-          onPressed: () {
-            playerController.updateMode(LoopMode.off);
-            playerController.updateShuffleMode(needShuffle: true);
-          },
-          icon: const Icon(
-            Icons.repeat_rounded,
-            color: Colors.white,
-          ),
-          iconSize: 35,
-        );
-      } else if (playerController.shuffleMode.value) {
-        return IconButton(
-          onPressed: () => playerController.updateMode(LoopMode.one),
-          icon: const Icon(
-            Icons.shuffle_rounded,
-            color: Colors.white,
-          ),
-          iconSize: 35,
-        );
-      } else {
-        return IconButton(
-          onPressed: () =>
-              playerController.updateShuffleMode(needShuffle: true),
-          icon: Icon(
-            Icons.shuffle_rounded,
-            color: Colors.white.withOpacity(.2),
-          ),
-          iconSize: 35,
-        );
-      }
-    });
   }
 }

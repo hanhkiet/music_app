@@ -20,11 +20,10 @@ class DashBoard extends StatelessWidget {
           children: [
             IndexedStack(
               index: controller.tabIndex,
-              children: [
-                const HomeScreen(),
-                const SearchScreen(),
-                Container(),
-                const UserScreen(),
+              children: const [
+                HomeScreen(),
+                SearchScreen(),
+                UserScreen(),
               ],
             ),
             const MinimizePlayer(height: 60),
@@ -47,10 +46,6 @@ class DashBoard extends StatelessWidget {
             BottomNavigationBarItem(
               icon: Icon(Icons.search),
               label: 'Search',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.playlist_play_rounded),
-              label: 'Library',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.person),
