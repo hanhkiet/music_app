@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:music_app/global/player_controller.dart';
 
@@ -14,22 +14,7 @@ class PlayerButton extends GetView<PlayerController> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        StreamBuilder<SequenceState?>(
-          stream: player.sequenceStateStream,
-          builder: (context, index) {
-            return IconButton(
-              onPressed: player.hasPrevious && controller.playlistLength > 1
-                  ? player.seekToPrevious
-                  : null,
-              icon: const Icon(
-                Icons.skip_previous,
-              ),
-              iconSize: 40,
-              color: Colors.white,
-              disabledColor: Colors.white24,
-            );
-          },
-        ),
+        const SeekToPreviousButton(),
         StreamBuilder<PlayerState>(
           stream: player.playerStateStream,
           builder: (context, snapshot) {
@@ -87,23 +72,66 @@ class PlayerButton extends GetView<PlayerController> {
             }
           },
         ),
-        StreamBuilder<SequenceState?>(
-          stream: player.sequenceStateStream,
-          builder: (context, index) {
-            return IconButton(
-              onPressed: player.hasNext && controller.playlistLength > 1
-                  ? player.seekToNext
-                  : null,
-              icon: const Icon(
-                Icons.skip_next,
-              ),
-              iconSize: 40,
-              color: Colors.white,
-              disabledColor: Colors.white24,
-            );
-          },
-        ),
+        const SeekToNextButton(),
       ],
+    );
+  }
+}
+
+class SeekToNextButton extends StatelessWidget {
+  const SeekToNextButton({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final PlayerController controller = Get.find();
+    final player = controller.audioPlayer;
+
+    return StreamBuilder<SequenceState?>(
+      stream: player.sequenceStateStream,
+      builder: (context, index) {
+        return IconButton(
+          onPressed: player.hasNext && controller.playlistLength > 1
+              ? player.seekToNext
+              : null,
+          icon: const Icon(
+            Icons.skip_next,
+          ),
+          iconSize: 40,
+          color: Colors.white,
+          disabledColor: Colors.white24,
+        );
+      },
+    );
+  }
+}
+
+class SeekToPreviousButton extends StatelessWidget {
+  const SeekToPreviousButton({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final PlayerController controller = Get.find();
+    final player = controller.audioPlayer;
+
+    return StreamBuilder<SequenceState?>(
+      stream: player.sequenceStateStream,
+      builder: (context, index) {
+        return IconButton(
+          onPressed: player.hasPrevious && controller.playlistLength > 1
+              ? player.seekToPrevious
+              : null,
+          icon: const Icon(
+            Icons.skip_previous,
+          ),
+          iconSize: 40,
+          color: Colors.white,
+          disabledColor: Colors.white24,
+        );
+      },
     );
   }
 }
