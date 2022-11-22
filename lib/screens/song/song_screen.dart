@@ -5,6 +5,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:music_app/global/player_controller.dart';
 import 'package:music_app/models/artist_model.dart';
 import 'package:music_app/models/song_model.dart';
+import 'package:music_app/services/firebase_firestore.dart';
 import 'package:music_app/services/firebase_storage.dart';
 import 'package:music_app/widgets/artist_listview.dart';
 import 'package:music_app/widgets/player_button.dart';
@@ -25,10 +26,7 @@ class SongScreen extends GetView<PlayerController> {
         elevation: 0,
       ),
       body: StreamBuilder(
-        stream: controller.audioPlayer.currentIndexStream.zipWith(
-          controller.audioPlayer.sequenceStateStream,
-          (i, s) => {"sequence": s, "index": i},
-        ),
+        stream: controller.audioPlayer.currentIndexStream,
         builder: (context, snapshot) {
           if (controller.getCurrentSong == null) {
             return const Center(
@@ -39,6 +37,7 @@ class SongScreen extends GetView<PlayerController> {
           PageController pageController = PageController();
 
           final Song currentSong = controller.getCurrentSong!;
+          FirestoreService.increasePlayCount(currentSong);
 
           return Stack(
             fit: StackFit.expand,

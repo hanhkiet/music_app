@@ -3,12 +3,14 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:music_app/global/player_controller.dart';
 import 'package:music_app/models/collection_model.dart';
 import 'package:music_app/models/song_model.dart';
 import 'package:music_app/screens/collection/collection_controller.dart';
 import 'package:music_app/services/firebase_functions.dart';
 import 'package:music_app/services/firebase_storage.dart';
+import 'package:music_app/utils/convert.dart';
 import 'package:music_app/widgets/background.dart';
 
 class CollectionScreen extends GetView<CollectionController> {
@@ -121,6 +123,7 @@ class PlaylistPlayMode extends StatelessWidget {
   void _playPlaylist() async {
     final PlayerController controller = Get.find();
     await controller.updateShuffleMode();
+    await controller.updateMode(LoopMode.off);
 
     Get.toNamed('/song', arguments: songs);
   }
@@ -157,7 +160,7 @@ class SongList extends StatelessWidget {
                   ),
             ),
             subtitle: Text(
-              'artists',
+              convertToNameList(songs[index].artists).join(', '),
               style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                     fontWeight: FontWeight.normal,
                   ),
