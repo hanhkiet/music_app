@@ -7,6 +7,7 @@ import 'package:music_app/models/artist_model.dart';
 import 'package:music_app/models/song_model.dart';
 import 'package:music_app/services/firebase_firestore.dart';
 import 'package:music_app/services/firebase_storage.dart';
+import 'package:music_app/utils/convert.dart';
 import 'package:music_app/widgets/artist_listview.dart';
 import 'package:music_app/widgets/player_button.dart';
 import 'package:music_app/widgets/seekbar.dart';
@@ -88,7 +89,7 @@ class ScreenInformation extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const ActionRow(),
+          ActionRow(song: song),
           const SizedBox(height: 20),
           ArtistList(artists: song.artists),
           const CurrentPlaylist(),
@@ -98,25 +99,130 @@ class ScreenInformation extends StatelessWidget {
   }
 }
 
-class CurrentPlaylist extends StatelessWidget {
+class CurrentPlaylist extends GetView<PlayerController> {
   const CurrentPlaylist({
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Text(
-            'Playlist',
-            style: Theme.of(context).textTheme.headline5!.copyWith(
-                  fontWeight: FontWeight.w600,
+    final List<Song> playlist = controller.playlist;
+
+    if (playlist.length == 1) return Container();
+
+    return StreamBuilder(
+        stream: controller.audioPlayer.currentIndexStream,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Container();
+          }
+
+          return SizedBox(
+            width: MediaQuery.of(context).size.width,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Text(
+                    'Playlist',
+                    style: Theme.of(context).textTheme.headline5!.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                  ),
                 ),
+                const SizedBox(
+                  height: 10,
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height * .3 + 100,
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: playlist.length,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        color: index == controller.audioPlayer.currentIndex
+                            ? Colors.white12
+                            : Colors.transparent,
+                        child: InkWell(
+                          onTap: () =>
+                              controller.audioPlayer.seek(null, index: index),
+                          child: ListTile(
+                            leading: CoverImage(song: playlist[index]),
+                            title: Text(
+                              playlist[index].name,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge!
+                                  .copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                            ),
+                            subtitle: Text(
+                              convertToNameList(playlist[index].artists)
+                                  .join(', '),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium!
+                                  .copyWith(
+                                    fontWeight: FontWeight.normal,
+                                  ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          );
+        });
+  }
+}
+
+class CoverImage extends StatelessWidget {
+  const CoverImage({
+    Key? key,
+    required this.song,
+  }) : super(key: key);
+
+  final Song song;
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: StorageService.getDownloadUrl('covers/${song.coverUrl}'),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Container(
+            width: 50,
+            height: 50,
+            color: Colors.black38,
+          );
+        }
+
+        String url = snapshot.data!;
+        return CachedNetworkImage(
+          imageUrl: url,
+          imageBuilder: (context, imageProvider) => Container(
+            width: 50,
+            height: 50,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: imageProvider,
+                fit: BoxFit.cover,
+              ),
+            ),
           ),
-        ),
-      ],
+          placeholder: (context, url) => Container(
+            width: 50,
+            height: 50,
+            color: Colors.black38,
+          ),
+        );
+      },
     );
   }
 }
@@ -152,7 +258,10 @@ class ArtistList extends StatelessWidget {
 class ActionRow extends StatelessWidget {
   const ActionRow({
     Key? key,
+    required this.song,
   }) : super(key: key);
+
+  final Song song;
 
   @override
   Widget build(BuildContext context) {
@@ -162,47 +271,71 @@ class ActionRow extends StatelessWidget {
         ActionButton(
           title: 'Favorite',
           icon: const Icon(Icons.favorite_border_rounded),
+          performedIcon: const Icon(Icons.favorite_rounded),
           action: () {},
+          redoAction: () {},
         ),
         ActionButton(
           title: 'Add to playlist',
           icon: const Icon(Icons.playlist_add_rounded),
+          performedIcon: const Icon(Icons.playlist_add_check_outlined),
           action: () {},
+          redoAction: () {},
         ),
         ActionButton(
           title: 'Download',
           icon: const Icon(Icons.download_rounded),
+          performedIcon: const Icon(Icons.download_done_rounded),
           action: () {},
+          redoAction: () {},
         ),
       ],
     );
   }
 }
 
-class ActionButton extends StatelessWidget {
+class ActionButton extends StatefulWidget {
   const ActionButton({
     Key? key,
     required this.title,
     required this.icon,
     required this.action,
+    required this.performedIcon,
+    required this.redoAction,
   }) : super(key: key);
 
   final String title;
   final Icon icon;
+  final Icon performedIcon;
   final Function() action;
+  final Function() redoAction;
+
+  @override
+  State<ActionButton> createState() => _ActionButtonState();
+}
+
+class _ActionButtonState extends State<ActionButton> {
+  bool performed = false;
+
+  void _toggle() => setState(() {
+        performed = !performed;
+      });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         IconButton(
-          onPressed: action,
-          icon: icon,
+          onPressed: () {
+            performed ? widget.redoAction : widget.action;
+            _toggle();
+          },
+          icon: performed ? widget.performedIcon : widget.icon,
           iconSize: 35,
           color: Colors.white,
         ),
         Text(
-          title,
+          widget.title,
         ),
       ],
     );

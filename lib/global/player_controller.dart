@@ -24,6 +24,7 @@ class PlayerController extends GetxController {
   }
 
   int get playlistLength => _playlist.length;
+  List<Song> get playlist => _playlist.getSongs;
 
   updatePlaylist(List<Song> newSongs, {bool shuffle = false}) async {
     _playlist.replace(newSongs);
@@ -74,6 +75,8 @@ class Playlist {
   List<Song> songs = [];
 
   int get length => songs.length;
+
+  List<Song> get getSongs => songs;
 
   Song? getSong(int index) => index < songs.length ? songs[index] : null;
 
