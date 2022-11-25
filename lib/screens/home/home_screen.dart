@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/state_manager.dart';
 import 'package:music_app/models/models.dart';
 import 'package:music_app/screens/home/home_controller.dart';
-import 'package:music_app/services/firebase_functions.dart';
+import 'package:music_app/services/functions.dart';
 import 'package:music_app/widgets/background.dart';
 import 'package:music_app/widgets/widgets.dart';
 

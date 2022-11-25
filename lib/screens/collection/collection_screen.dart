@@ -8,8 +8,8 @@ import 'package:music_app/global/player_controller.dart';
 import 'package:music_app/models/collection_model.dart';
 import 'package:music_app/models/song_model.dart';
 import 'package:music_app/screens/collection/collection_controller.dart';
-import 'package:music_app/services/firebase_functions.dart';
-import 'package:music_app/services/firebase_storage.dart';
+import 'package:music_app/services/functions.dart';
+import 'package:music_app/services/storage.dart';
 import 'package:music_app/utils/convert.dart';
 import 'package:music_app/widgets/background.dart';
 

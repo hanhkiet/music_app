@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:music_app/models/models.dart';
-import 'package:music_app/services/firebase_storage.dart';
+import 'package:music_app/services/storage.dart';
 
 class PlayerController extends GetxController {
   final Playlist _playlist = Playlist();

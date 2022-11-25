@@ -6,7 +6,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:marquee/marquee.dart';
 import 'package:music_app/global/player_controller.dart';
 import 'package:music_app/models/models.dart';
-import 'package:music_app/services/firebase_storage.dart';
+import 'package:music_app/services/storage.dart';
 import 'package:music_app/themes.dart';
 import 'package:music_app/utils/convert.dart';
 import 'package:music_app/widgets/widgets.dart';

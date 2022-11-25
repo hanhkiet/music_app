@@ -26,6 +26,7 @@ dependencies:
   cached_network_image: ^3.2.2
   marquee: ^2.2.3
   auto_size_text: ^3.0.0
+  algolia: ^1.1.1
 
 dev_dependencies:
   flutter_test:

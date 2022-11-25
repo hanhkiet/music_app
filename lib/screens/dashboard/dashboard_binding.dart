@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:music_app/screens/dashboard/dashboard_controller.dart';
 import 'package:music_app/screens/home/home_controller.dart';
+import 'package:music_app/screens/search/search_controller.dart';
 import 'package:music_app/screens/user/user_controller.dart';
 
 class DashBoardBinding extends Bindings {
@@ -8,6 +9,7 @@ class DashBoardBinding extends Bindings {
   void dependencies() {
     Get.lazyPut(() => DashBoardController());
     Get.lazyPut(() => HomeController());
+    Get.lazyPut(() => SearchController());
     Get.lazyPut(() => UserController());
   }
 }

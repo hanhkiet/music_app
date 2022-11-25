@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:music_app/screens/user/user_controller.dart';
-import 'package:music_app/services/firebase_auth.dart';
+import 'package:music_app/services/auth.dart';
 import 'package:music_app/widgets/background.dart';
 
 class UserScreen extends GetView<UserController> {

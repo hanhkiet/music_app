@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:music_app/models/song_model.dart';
-import 'package:music_app/services/firebase_storage.dart';
+import 'package:music_app/services/storage.dart';
 import 'package:music_app/utils/convert.dart';
 
 class SongCard extends StatelessWidget {

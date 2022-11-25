@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:music_app/models/models.dart';
 import 'package:music_app/screens/artist/artist_controller.dart';
-import 'package:music_app/services/firebase_functions.dart';
-import 'package:music_app/services/firebase_storage.dart';
+import 'package:music_app/services/functions.dart';
+import 'package:music_app/services/storage.dart';
 import 'package:music_app/widgets/background.dart';
 import 'package:music_app/widgets/widgets.dart';
 

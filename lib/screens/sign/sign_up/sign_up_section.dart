@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:music_app/screens/sign/sign_controller.dart';
 import 'package:music_app/screens/sign/sign_up/sign_up_controller.dart';
-import 'package:music_app/services/firebase_auth.dart';
+import 'package:music_app/services/auth.dart';
 
 class SignUpSection extends GetView<SignUpController> {
   const SignUpSection({
