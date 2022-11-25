@@ -1,10 +1,9 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:get/state_manager.dart';
 import 'package:music_app/models/models.dart';
 import 'package:music_app/screens/home/home_controller.dart';
 import 'package:music_app/services/functions.dart';
+import 'package:music_app/utils/convert.dart';
 import 'package:music_app/widgets/background.dart';
 import 'package:music_app/widgets/widgets.dart';
 
@@ -49,8 +48,9 @@ class TrendingSongsSection extends StatelessWidget {
           return Container();
         }
 
-        final data = snapshot.data!.data.map((e) => json.encode(e)) as Iterable;
+        final data = cleanDataFromCloudFunction(snapshot.data!.data);
         final songs = Song.fromData(data);
+
         return SongsListView(
           title: 'Trending songs',
           songs: songs,
@@ -74,8 +74,9 @@ class TopPlaylistsSection extends StatelessWidget {
           return Container();
         }
 
-        final data = snapshot.data!.data.map((e) => json.encode(e)) as Iterable;
+        final data = cleanDataFromCloudFunction(snapshot.data!.data);
         final collections = Collection.fromData(data);
+
         return CollectionsListView(
           title: 'Top playlists',
           collections: collections,
@@ -99,7 +100,7 @@ class TopArtistsSection extends StatelessWidget {
           return Container();
         }
 
-        final data = snapshot.data!.data.map((e) => json.encode(e));
+        final data = cleanDataFromCloudFunction(snapshot.data!.data);
         final artists = Artist.fromData(data);
 
         return Padding(
@@ -113,7 +114,7 @@ class TopArtistsSection extends StatelessWidget {
                 padding: EdgeInsets.only(left: 10),
                 child: SectionHeader(title: 'Top artists'),
               ),
-              ArtistListView(artists: artists)
+              ArtistListView(artists: artists),
             ],
           ),
         );
@@ -146,22 +147,6 @@ class MusicDiscover extends StatelessWidget {
                 .headlineSmall!
                 .copyWith(fontWeight: FontWeight.bold),
           ),
-          // TextFormField(
-          //   decoration: InputDecoration(
-          //     filled: true,
-          //     fillColor: Colors.white,
-          //     hintText: 'Search',
-          //     hintStyle: Theme.of(context)
-          //         .textTheme
-          //         .bodyMedium!
-          //         .copyWith(color: Colors.grey.shade400),
-          //     prefixIcon: const Icon(Icons.search),
-          //     border: OutlineInputBorder(
-          //       borderRadius: BorderRadius.circular(15),
-          //       borderSide: BorderSide.none,
-          //     ),
-          //   ),
-          // )
         ],
       ),
     );

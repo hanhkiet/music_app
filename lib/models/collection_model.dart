@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 class Collection {
   final String id;
   final String name;
@@ -17,17 +15,6 @@ class Collection {
     required this.playCount,
   });
 
-  factory Collection.fromJson(Map<String, dynamic> json) {
-    return Collection(
-      id: json['id'],
-      name: json['name'],
-      type: json['type'],
-      favoriteCount: json['favorite_count'],
-      playCount: json['play_count'],
-      coverUrl: json['cover_url'],
-    );
-  }
-
   factory Collection.empty() {
     return Collection(
       id: '',
@@ -39,8 +26,18 @@ class Collection {
     );
   }
 
+  factory Collection.fromJson(Map<String, dynamic> json) {
+    return Collection(
+      id: json['id'],
+      name: json['name'],
+      type: json['type'],
+      favoriteCount: json['favorite_count'],
+      playCount: json['play_count'],
+      coverUrl: json['cover_url'],
+    );
+  }
+
   static List<Collection> fromData(Iterable i) {
-    return List<Collection>.from(
-        i.map((e) => Collection.fromJson(json.decode(e))));
+    return List<Collection>.from(i.map((e) => Collection.fromJson(e)));
   }
 }

@@ -35,9 +35,9 @@ class CollectionScreen extends GetView<CollectionController> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: const [
-                CollectionInformation(),
+                // CollectionInformation(),
                 SizedBox(height: 10),
-                SongsList(),
+                // SongsList(),
               ],
             ),
           ),

@@ -1,7 +1,7 @@
 import 'package:get/state_manager.dart';
 
 class DashBoardController extends GetxController {
-  var tabIndex = 1;
+  var tabIndex = 0;
 
   changeTabIndex(int index) {
     tabIndex = index;

@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 class Artist {
   final String id;
   final String name;
@@ -23,6 +21,6 @@ class Artist {
   }
 
   static List<Artist> fromData(Iterable i) {
-    return List<Artist>.from(i.map((e) => Artist.fromJson(jsonDecode(e))));
+    return List<Artist>.from(i.map((e) => Artist.fromJson(e)));
   }
 }

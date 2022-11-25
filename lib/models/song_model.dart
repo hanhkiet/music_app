@@ -1,6 +1,5 @@
-import 'dart:convert';
-
 import 'package:music_app/models/models.dart';
+import 'package:music_app/utils/convert.dart';
 
 class Song {
   final String id;
@@ -23,20 +22,6 @@ class Song {
     required this.artists,
   });
 
-  factory Song.fromJson(Map<String, dynamic> json) {
-    final artistsData = json['artists'].map((e) => jsonEncode(e));
-
-    return Song(
-      id: json['id'],
-      name: json['name'],
-      favoriteCount: json['favorite_count'],
-      playCount: json['play_count'],
-      coverUrl: json['cover_url'],
-      storageRef: json['storage_ref'],
-      artists: Artist.fromData(artistsData),
-    );
-  }
-
   factory Song.empty() {
     return Song(
       id: '',
@@ -49,7 +34,21 @@ class Song {
     );
   }
 
+  factory Song.fromJson(Map<String, dynamic> json) {
+    final artistsData =
+        (json['artists'] as Iterable).map((e) => convertToJson(e));
+    return Song(
+      id: json['id'],
+      name: json['name'],
+      favoriteCount: json['favorite_count'],
+      playCount: json['play_count'],
+      coverUrl: json['cover_url'],
+      storageRef: json['storage_ref'],
+      artists: Artist.fromData(artistsData),
+    );
+  }
+
   static List<Song> fromData(Iterable i) {
-    return List<Song>.from(i.map((e) => Song.fromJson(json.decode(e))));
+    return List<Song>.from(i.map((e) => Song.fromJson(e)));
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:music_app/screens/search/search_controller.dart';
+import 'package:music_app/services/search.dart';
 import 'package:music_app/themes.dart';
 import 'package:music_app/widgets/background.dart';
 
@@ -19,13 +20,20 @@ class SearchScreen extends GetView<SearchController> {
               children: [
                 const Title(),
                 const SizedBox(height: 15),
-                SearchBar(
-                  searchFieldController: controller.searchFieldController,
-                ),
-                const SizedBox(height: 15),
+                const SearchBar(),
+                const SizedBox(height: 30),
                 Obx(() {
-                  if (controller.showResult.value) {
-                    return const SearchResult();
+                  if (controller.query.isNotEmpty) {
+                    return FutureBuilder(
+                      future: SearchService().searchSongs(controller.getQuery),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                          return const CircularProgressIndicator();
+                        }
+
+                        return const SearchResult();
+                      },
+                    );
                   } else {
                     return const Browser();
                   }
@@ -50,11 +58,11 @@ class Browser extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Text(
             'Browse',
-            style: Theme.of(context).textTheme.headline4!.copyWith(
-                  fontWeight: FontWeight.w500,
+            style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                  fontWeight: FontWeight.w600,
                 ),
           ),
         ),
@@ -81,6 +89,7 @@ class Browser extends StatelessWidget {
 class SearchResult extends StatelessWidget {
   const SearchResult({
     Key? key,
+    Object? songs,
   }) : super(key: key);
 
   @override
@@ -116,24 +125,15 @@ class Title extends StatelessWidget {
 class SearchBar extends StatelessWidget {
   const SearchBar({
     Key? key,
-    required this.searchFieldController,
   }) : super(key: key);
 
-  final TextEditingController searchFieldController;
   @override
   Widget build(BuildContext context) {
     final SearchController controller = Get.find();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
       child: TextField(
-        controller: searchFieldController,
-        onChanged: (value) {
-          if (value.isEmpty) {
-            controller.updateShowResult(false);
-          } else {
-            controller.updateShowResult(true);
-          }
-        },
+        onChanged: (value) => controller.updateQuery(value),
         textInputAction: TextInputAction.search,
         keyboardType: TextInputType.text,
         cursorColor: Colors.white,

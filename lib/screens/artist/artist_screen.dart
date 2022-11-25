@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,7 +6,6 @@ import 'package:music_app/screens/artist/artist_controller.dart';
 import 'package:music_app/services/functions.dart';
 import 'package:music_app/services/storage.dart';
 import 'package:music_app/widgets/background.dart';
-import 'package:music_app/widgets/widgets.dart';
 
 class ArtistScreen extends GetView<ArtistController> {
   const ArtistScreen({super.key});
@@ -61,12 +58,13 @@ class Albums extends StatelessWidget {
           return Container();
         }
 
-        final data = snapshot.data!.data.map((e) => json.encode(e)) as Iterable;
-        final collections = Collection.fromData(data);
-        return CollectionsListView(
-          title: 'Albums',
-          collections: collections,
-        );
+        // final data = snapshot.data!.data.map((e) => json.encode(e)) as Iterable;
+        // final collections = Collection.fromData(data);
+        // return CollectionsListView(
+        //   title: 'Albums',
+        //   collections: collections,
+        // );
+        return Container();
       },
     );
   }
@@ -92,12 +90,13 @@ class PopularSongs extends StatelessWidget {
           return Container();
         }
 
-        final data = snapshot.data!.data.map((e) => json.encode(e)) as Iterable;
-        final songs = Song.fromData(data);
-        return SongsListView(
-          title: 'Popular songs',
-          songs: songs,
-        );
+        // final data = snapshot.data!.data.map((e) => json.encode(e)) as Iterable;
+        // final songs = Song.fromData(data);
+        // return SongsListView(
+        //   title: 'Popular songs',
+        //   songs: songs,
+        // );
+        return Container();
       },
     );
   }

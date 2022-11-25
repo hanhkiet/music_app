@@ -1,7 +1,7 @@
 import 'package:cloud_functions/cloud_functions.dart';
 
 class FunctionsService {
-  static get instance => FirebaseFunctions.instance;
+  static FirebaseFunctions get instance => FirebaseFunctions.instance;
 
   static Future<HttpsCallableResult<dynamic>> callFunction(
       String function, Map<String, dynamic> parameter) {
