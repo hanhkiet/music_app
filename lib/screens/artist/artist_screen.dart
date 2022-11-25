@@ -156,7 +156,7 @@ class CoverImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: StorageService.getDownloadUrl('artists/${artist.coverUrl}'),
+      future: StorageService.getDownloadUrl('covers/${artist.coverUrl}'),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return const CircularProgressIndicator();

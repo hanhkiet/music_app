@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:algolia/algolia.dart';
 
 class SearchService {
@@ -13,27 +11,66 @@ class SearchService {
 
   Algolia get instance => algolia.instance;
 
+  searchResults(String query) async {
+    final songs = await searchSongs(query);
+    final artists = await searchArtists(query);
+    final collections = await searchCollections(query);
+
+    final List result = [];
+    result.addAll(songs);
+    result.addAll(artists);
+    result.addAll(collections);
+    result.sort((a, b) => int.parse(a['rank'].toString())
+        .compareTo(int.parse(b['rank'].toString())));
+
+    return result;
+  }
+
   searchSongs(String query) async {
     AlgoliaQuery algoliaQuery = instance.index('songs').query(query);
     AlgoliaQuerySnapshot snap = await algoliaQuery.getObjects();
 
     return snap.hits.map((e) {
       final map = e.toMap();
-      return jsonEncode({
+      return {
         'id': map['id'],
-        'name': map['name'],
-        'favorite_count': map['favorite_count'],
-        'play_count': map['play_count'],
+        'result_type': 'song',
+        'title': map['name'],
         'cover_url': map['cover_url'],
-        'storage_ref': map['storage_ref'],
-        'artists': map['artists'] as Iterable,
-      });
-    });
+        'rank': int.parse(map['play_count'].toString()),
+      };
+    }).toList();
   }
 
-  searchArtists(String artist) async {
-    AlgoliaQuery algoliaQuery = instance.index('artists').query(artist);
+  searchArtists(String query) async {
+    AlgoliaQuery algoliaQuery = instance.index('artists').query(query);
     AlgoliaQuerySnapshot snap = await algoliaQuery.getObjects();
-    return snap;
+
+    return snap.hits.map((e) {
+      final map = e.toMap();
+      return {
+        'item_id': map['id'],
+        'result_type': 'artist',
+        'title': map['name'],
+        'cover_url': map['cover_url'],
+        'rank': int.parse(map['follow_count'].toString()),
+      };
+    }).toList();
+  }
+
+  searchCollections(String query) async {
+    AlgoliaQuery algoliaQuery = instance.index('collections').query(query);
+    AlgoliaQuerySnapshot snap = await algoliaQuery.getObjects();
+
+    return snap.hits.map((e) {
+      final map = e.toMap();
+      return {
+        'item_id': map['id'],
+        'result_type': map['type'] == 'album' ? 'album' : 'playlist',
+        'title': map['name'],
+        'cover_url': map['cover_url'],
+        'rank': int.parse(map['play_count'].toString()),
+      };
+    }).toList();
   }
 }

@@ -10,17 +10,20 @@ class SeekBarData {
 }
 
 class SeekBar extends StatefulWidget {
-  const SeekBar(
-      {super.key,
-      required this.duration,
-      required this.position,
-      this.onChanged,
-      this.onChangedEnd});
+  const SeekBar({
+    super.key,
+    required this.duration,
+    required this.position,
+    this.onChanged,
+    this.onChangedEnd,
+    required this.themeData,
+  });
 
   final Duration duration;
   final Duration position;
   final ValueChanged<Duration>? onChanged;
   final ValueChanged<Duration>? onChangedEnd;
+  final SliderThemeData themeData;
 
   @override
   State<SeekBar> createState() => _SeekBarState();
@@ -55,20 +58,7 @@ class _SeekBarState extends State<SeekBar> {
         Column(
           children: [
             SliderTheme(
-              data: SliderTheme.of(context).copyWith(
-                trackHeight: 6,
-                thumbShape: const RoundSliderThumbShape(
-                  disabledThumbRadius: 8,
-                  enabledThumbRadius: 6,
-                ),
-                overlayShape: const RoundSliderOverlayShape(
-                  overlayRadius: 10,
-                ),
-                activeTrackColor: Colors.white.withOpacity(.2),
-                inactiveTrackColor: Colors.white,
-                thumbColor: Colors.white,
-                overlayColor: Colors.white,
-              ),
+              data: widget.themeData,
               child: Slider(
                 min: 0.0,
                 max: max(widget.duration.inMilliseconds.toDouble(),

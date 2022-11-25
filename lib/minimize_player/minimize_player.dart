@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +12,7 @@ import 'package:music_app/services/storage.dart';
 import 'package:music_app/themes.dart';
 import 'package:music_app/utils/convert.dart';
 import 'package:music_app/widgets/widgets.dart';
-import 'package:rxdart/rxdart.dart';
+import 'package:rxdart/rxdart.dart' as rxdart;
 
 class MinimizePlayer extends GetView<PlayerController> {
   const MinimizePlayer({
@@ -20,59 +22,153 @@ class MinimizePlayer extends GetView<PlayerController> {
 
   final double height;
 
+  Stream<SeekBarData> _getSeekBarDataStream(AudioPlayer audioPlayer) {
+    return rxdart.Rx.combineLatest2<Duration, Duration?, SeekBarData>(
+        audioPlayer.positionStream, audioPlayer.durationStream,
+        (Duration position, Duration? duration) {
+      return SeekBarData(position, duration ?? Duration.zero);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        stream: controller.audioPlayer.currentIndexStream.zipWith(
-          controller.audioPlayer.sequenceStateStream,
-          (i, s) => {"sequence": s, "index": i},
-        ),
+        stream: _getSeekBarDataStream(controller.audioPlayer),
         builder: (context, snapshot) {
           if (!snapshot.hasData || controller.getCurrentSong == null) {
             return Container();
           }
 
           final Song song = controller.getCurrentSong!;
+          final positionData = snapshot.data;
 
           return Align(
             alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 5,
-                horizontal: 10,
-              ),
-              child: InkWell(
-                onTap: () => Get.toNamed('/song', arguments: [song]),
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: height,
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                    color: AppTheme.accent,
-                  ),
-                  child: Padding(
+            child: SizedBox(
+              height: 70,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        CoverImage(song: song),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 10),
-                            child: SongTitle(song: song),
+                    child: InkWell(
+                      onTap: () => Get.toNamed('/song', arguments: [song]),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: height,
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          color: AppTheme.accent,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              CoverImage(song: song),
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 10),
+                                  child: SongTitle(song: song),
+                                ),
+                              ),
+                              const PlayButton(),
+                              const ModeButton(),
+                            ],
                           ),
                         ),
-                        const PlayButton(),
-                        const ModeButton(),
-                      ],
+                      ),
                     ),
                   ),
-                ),
+                  SeekBar(
+                    duration: positionData?.duration ?? Duration.zero,
+                    position: positionData?.position ?? Duration.zero,
+                    onChangedEnd: controller.audioPlayer.seek,
+                    themeData: SliderTheme.of(context).copyWith(
+                      trackHeight: 2,
+                      thumbShape: const RoundSliderThumbShape(
+                        disabledThumbRadius: 3,
+                        enabledThumbRadius: 4,
+                        elevation: 0,
+                      ),
+                      overlayShape: const RoundSliderOverlayShape(
+                        overlayRadius: 0,
+                      ),
+                      activeTrackColor: Colors.white.withOpacity(.2),
+                      inactiveTrackColor: Colors.white,
+                      thumbColor: Colors.white,
+                      overlayColor: Colors.white,
+                    ),
+                  ),
+                ],
               ),
             ),
           );
         });
+  }
+}
+
+class SeekBar extends StatefulWidget {
+  const SeekBar({
+    super.key,
+    required this.duration,
+    required this.position,
+    this.onChanged,
+    this.onChangedEnd,
+    required this.themeData,
+  });
+
+  final Duration duration;
+  final Duration position;
+  final ValueChanged<Duration>? onChanged;
+  final ValueChanged<Duration>? onChangedEnd;
+  final SliderThemeData themeData;
+
+  @override
+  State<SeekBar> createState() => _SeekBarState();
+}
+
+class _SeekBarState extends State<SeekBar> {
+  double? _dragValue;
+  double? _draggingValue;
+
+  @override
+  Widget build(BuildContext context) {
+    return SliderTheme(
+      data: widget.themeData,
+      child: Slider(
+        min: 0.0,
+        max: max(widget.duration.inMilliseconds.toDouble(),
+            widget.position.inMilliseconds.toDouble()),
+        value: _draggingValue ??
+            min(
+              _dragValue ?? widget.position.inMilliseconds.toDouble(),
+              widget.position.inMilliseconds.toDouble(),
+            ),
+        onChanged: (value) {
+          setState(() {
+            _draggingValue = value;
+          });
+        },
+        onChangeEnd: (value) {
+          setState(() {
+            _dragValue = value;
+          });
+
+          if (widget.onChangedEnd != null) {
+            widget.onChangedEnd!(
+              Duration(
+                milliseconds: value.round(),
+              ),
+            );
+          }
+
+          _dragValue = null;
+          _draggingValue = null;
+        },
+      ),
+    );
   }
 }
 

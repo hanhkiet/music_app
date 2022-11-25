@@ -438,6 +438,20 @@ class MusicPlayer extends StatelessWidget {
                 duration: positionData?.duration ?? Duration.zero,
                 position: positionData?.position ?? Duration.zero,
                 onChangedEnd: player.seek,
+                themeData: SliderTheme.of(context).copyWith(
+                  trackHeight: 6,
+                  thumbShape: const RoundSliderThumbShape(
+                    disabledThumbRadius: 8,
+                    enabledThumbRadius: 6,
+                  ),
+                  overlayShape: const RoundSliderOverlayShape(
+                    overlayRadius: 10,
+                  ),
+                  activeTrackColor: Colors.white.withOpacity(.2),
+                  inactiveTrackColor: Colors.white,
+                  thumbColor: Colors.white,
+                  overlayColor: Colors.white,
+                ),
               );
             },
           ),

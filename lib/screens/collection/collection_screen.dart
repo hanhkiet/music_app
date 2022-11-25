@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -35,9 +33,9 @@ class CollectionScreen extends GetView<CollectionController> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: const [
-                // CollectionInformation(),
+                CollectionInformation(),
                 SizedBox(height: 10),
-                // SongsList(),
+                SongsList(),
               ],
             ),
           ),
@@ -62,7 +60,7 @@ class SongsList extends StatelessWidget {
           return Container();
         }
 
-        final data = snapshot.data!.data.map((e) => json.encode(e)) as Iterable;
+        final data = cleanDataFromCloudFunction(snapshot.data!.data);
         final songs = Song.fromData(data);
 
         return Column(

@@ -45,7 +45,7 @@ class CoverImage extends StatelessWidget {
     return FutureBuilder(
       future: FirebaseStorage.instance
           .ref()
-          .child('artists/${artist.coverUrl}')
+          .child('covers/${artist.coverUrl}')
           .getDownloadURL(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {

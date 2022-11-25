@@ -1,8 +1,14 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:music_app/models/models.dart';
+import 'package:music_app/models/search_result_model.dart';
 import 'package:music_app/screens/search/search_controller.dart';
+import 'package:music_app/services/functions.dart';
 import 'package:music_app/services/search.dart';
+import 'package:music_app/services/storage.dart';
 import 'package:music_app/themes.dart';
+import 'package:music_app/utils/convert.dart';
 import 'package:music_app/widgets/background.dart';
 
 class SearchScreen extends GetView<SearchController> {
@@ -31,7 +37,9 @@ class SearchScreen extends GetView<SearchController> {
                           return const CircularProgressIndicator();
                         }
 
-                        return const SearchResult();
+                        final data = snapshot.data as Iterable;
+                        final results = SearchResult.fromData(data);
+                        return Result(results: results);
                       },
                     );
                   } else {
@@ -86,18 +94,177 @@ class Browser extends StatelessWidget {
   }
 }
 
-class SearchResult extends StatelessWidget {
-  const SearchResult({
+// class Result extends StatelessWidget {
+//   const Result({
+//     Key? key,
+//     Object? songs,
+//     required this.results,
+//   }) : super(key: key);
+
+//   final List<SearchResult> results;
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return ListView.builder(
+//       shrinkWrap: true,
+//       itemCount: results.length,
+//       itemBuilder: (context, index) {
+//         final type = results[index].resultType;
+//         final id = results[index].id;
+//         return Text(id);
+//       },
+//     );
+//   }
+// }
+
+class Result extends StatelessWidget {
+  const Result({
     Key? key,
     Object? songs,
+    required this.results,
   }) : super(key: key);
+
+  final List<SearchResult> results;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 100,
-      width: MediaQuery.of(context).size.width,
-      color: Colors.red,
+    return ListView.builder(
+      shrinkWrap: true,
+      itemCount: results.length,
+      itemBuilder: (context, index) {
+        final type = results[index].resultType;
+        final id = results[index].id;
+
+        if (type == 'song') {
+          return FutureBuilder(
+            future: FunctionsService.callFunction('getSong', {'id': id}),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Container();
+              }
+
+              final data = convertToJson(snapshot.data!.data);
+              final song = Song.fromJson(data);
+
+              return InkWell(
+                onTap: () {
+                  Get.toNamed('/song', arguments: [song]);
+                },
+                child: ListTile(
+                  leading: CoverImage(result: results[index]),
+                  title: Text(results[index].title),
+                  subtitle: Text(results[index].resultType),
+                  trailing: const Icon(
+                    Icons.chevron_right_rounded,
+                    color: Colors.white,
+                  ),
+                ),
+              );
+            },
+          );
+        } else if (type == 'artist') {
+          return FutureBuilder(
+            future: FunctionsService.callFunction('getArtist', {'id': id}),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Container();
+              }
+
+              final data = convertToJson(snapshot.data!.data);
+              final artist = Song.fromJson(data);
+
+              return InkWell(
+                onTap: () {
+                  Get.toNamed('/artist', arguments: artist);
+                },
+                child: ListTile(
+                  leading: CoverImage(result: results[index]),
+                  title: Text(results[index].title),
+                  subtitle: Text(results[index].resultType),
+                  trailing: const Icon(
+                    Icons.chevron_right_rounded,
+                    color: Colors.white,
+                  ),
+                ),
+              );
+            },
+          );
+        }
+
+        return FutureBuilder(
+          future: FunctionsService.callFunction('getCollection', {'id': id}),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return Container();
+            }
+
+            final data = convertToJson(snapshot.data!.data);
+            final collection = Song.fromJson(data);
+
+            return InkWell(
+              onTap: () {
+                Get.toNamed('/collection', arguments: collection);
+              },
+              child: ListTile(
+                leading: CoverImage(result: results[index]),
+                title: Text(results[index].title),
+                subtitle: Text(results[index].resultType),
+                trailing: const Icon(
+                  Icons.chevron_right_rounded,
+                  color: Colors.white,
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+}
+
+class CoverImage extends StatelessWidget {
+  const CoverImage({
+    Key? key,
+    required this.result,
+  }) : super(key: key);
+
+  final SearchResult result;
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: StorageService.getDownloadUrl('covers/${result.coverUrl}'),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Container(
+            width: 50,
+            height: 50,
+            color: Colors.black38,
+          );
+        }
+
+        String url = snapshot.data!;
+        if (url.isEmpty) return Container();
+
+        return CachedNetworkImage(
+          imageUrl: url,
+          imageBuilder: (context, imageProvider) => Container(
+            width: 50,
+            height: 50,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: imageProvider,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          placeholder: (context, url) => Container(
+            width: 50,
+            height: 50,
+            color: Colors.black38,
+          ),
+        );
+      },
     );
   }
 }
